@@ -1,2 +1,4 @@
 ebin/
 deps/
+src/klang/kraft_parser.erl
+src/klang/kraft_scanner.erl
