@@ -1,0 +1,12 @@
+{application, kraft,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { kraft_app, []}},
+  {env, []}
+ ]}.

@@ -1,0 +1,74 @@
+{ "name": "kraft",
+  "scopeName": "source.kraft",
+  "fileTypes": ["k"],
+  "foldingStartMarker": "{\\s*$",
+  "foldingStopMarker": "^\\s*}",
+  "patterns": [
+    { "name":"keyword.control.kraft"
+    , "match":"\\s*\\b(do|draw|case|of)\\b"
+    },
+    { "name":"meta.kraft"
+    , "match":"\\b(time)\\b"
+    },
+    { "name":"meta.structure.dictionary"
+    , "match":"{\\s*[a-z][A-Za-z0-9]*\\s*}"
+    },
+    { "name":"entity.name.function.kraft"
+    , "match":"^\\s*[a-z][A-Za-z0-9]*"
+    },
+    { "name":"comment.kraft"
+    , "match":"--.*$\\n?"
+    },
+    { "name":"keyword.control.kraft"
+    , "match":"\\s*(->|>>)\\s*"
+    },
+
+    { "contentName": "meta.structure.dictionary"
+    , "begin": "{"
+    , "end": "}"
+    , "patterns": [
+        { "name":"source.kraft"
+        , "match":"\\s*([a-z_][\\w_]*)\\s*(=)"
+        , "captures": {
+            "1": {
+              "name":"entity.other.attribute-name.kraft"
+            },
+            "2": {
+              "name":"operator.kraft"
+            }
+          }
+        },
+        { "name":"entity.name.function.kraft"
+        , "match":"\\s*\\.\\s*[a-z_][\\w_]*"
+        },
+        { "include": "#values"},
+        { "include": "#typevar"}
+      ]
+    },
+    { "include": "#values"},
+    { "include": "#typevar"}
+  ],
+  "repository": {
+    "values": {
+      "patterns": [
+        { "name":"constant.numeric.kraft"
+        , "match":"(?<![\\d.])\\s0x[a-fA-F\\d]+|\\b\\d+(\\.\\d+)?([eE]-?\\d+)?|\\.\\d+([eE]-?\\d+)?"
+        },
+        { "name": "variable.parameter.kraft"
+        , "match": "[a-z_][\\w_]*"
+        },
+        { "name": "operator.kraft"
+        , "match": "\\+|-|%|#|\\*|\\/|\\^|==?|~=|<=?|<=?|(?<!\\.)\\.{2}(?!\\.)"
+        }
+      ]
+    },
+    "typevar": {
+      "patterns": [
+        { "name":"storage.type.kraft"
+        , "match":"[A-Z][A-Za-z0-9]*"
+        }
+      ]
+    }
+  },
+  "uuid": "22f4325c-019e-4503-a1a1-c0d0bd807b8a"
+}

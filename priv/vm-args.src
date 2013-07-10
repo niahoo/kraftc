@@ -1,0 +1,15 @@
+# NODE CONFIG
+
+# -sname poposervice
+# -setcookie testcookie
+
+# DEBUGGING
+
+# -init_debug
+# -emu_args
+
+# APPLICATIONS START
+
+-s kraft
+-noshell
+## Path disponible
