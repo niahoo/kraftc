@@ -22,11 +22,6 @@ pain Farine(100) Eau(20) -> Pain(10) end
 
 recolte -> Ble(100) end
 
--- La quantité peut être exprimée sous forme variable pour un type et
--- la quantité des autres composants ou des éléments de sortie peut
--- être fonction de la quantité d'un composant.
-
-pain Farine(x) Eau(x/100) Sel(10) -> Pain(x/10) end
 
 -- les technics ont aussi des métadonnées précisées entre parenthèses
 -- après la définition des types, l'exemple le plus simple est le
@@ -35,29 +30,7 @@ pain Farine(x) Eau(x/100) Sel(10) -> Pain(x/10) end
 -- de définir des comportements de la technic. (Pour le moment seul
 -- 'delay' est implémentée)
 
-crush Ble(x) (delay: x/1000) -> Farine(x/10) end
-
--- Certaines fonctions mathématiques sont disponibles afin de définir
--- les quantités de types. Si par exemple on veut limiter la quantité
--- maximale de sel nécessaire, on écrit le code suivant. Une fonction
--- mathématique s'écrit entre parenthèses, commencant par le nom de la
--- fonction suivi des arguments. Les arguments sont des expressions et
--- peuvent faire appel aux variables définies dans les types
--- précédents. La structure actuelle du compilateur exige de doubler
--- les parenthèses si la quantité de type est définie par un seul
--- appel de fonction
-
-
-pain Farine(x) Eau(x/100) Sel((min 20 x/10)) -> Pain(x/10) end -- on double les parenthèses
-pain Farine(x) Eau(x/100) Sel((min (sqrt x) x/10)) -> Pain(x/10) end
-pain Farine(x) Eau(x/100) Sel(3 + (min x 10)) -> Pain(x/10) end
-
--- On peut également utiliser les opérateurs mathématiques sous forme
--- d'appel de fonctions, afin d'additionner plus simplement des
--- nombres. Les deux lignes suivantes sont équivalentes.
-
-pain Farine(x) Eau(x/100) Sel(1 + 2 + 3 + 4 + 5) -> Pain(x/10) end
-pain Farine(x) Eau(x/100) Sel((+ 1 2 3 4 5)) -> Pain(x/10) end
+crush Ble(1) (delay: 1) -> Farine(1) end
 
 
 -- Au lieu de stocker les propriétés des items dans une base de
@@ -70,34 +43,23 @@ pain Farine(x) Eau(x/100) Sel((+ 1 2 3 4 5)) -> Pain(x/10) end
 -- tiret de soulignement) à des expression via l'opérateur '=',
 -- séparées par une virgule.
 
-crush Ble(x) (delay: x/1000)  -> Farine(x/10) {
+crush Ble(10) (delay: 1)  -> Farine(1) {
     nutrition = 10, conservation = 5
     , quality = 5 , _prop = 3
 } end
 
--- Il est possible de faire référence aux variables de quantité de
--- type dans une expression, tout comme il est possible d'utiliser des
--- fonctions mathématiques
 
-crush Ble(x) (delay: x/1000)  -> Farine(x/10) {
-    nutrition = 10,
-    conservation = x * 2,
-    quality = (min x 10)
-} end
+-- Il est possible d'utiliser les propriétés des types en entrée pour
+-- définir celles des types en sortie. Les propriétés des types en
+-- entrée sont fournies par l'application appelante lors du lancement
+-- d'une technic. Afin de faire référence aux propriétés d'un type, on
+-- déclare une variable accolée au type ciblé via l'opérateur ':'. On
+-- peut ensuite à partir de cette variable faire appel à l'une de ses
+-- propriétés en faisant suivre la variable d'un point et du nom de la
+-- propriété. Les propriétés commencent également par une minuscule
+-- (ou un tiret de soulignement)
 
--- Cependant, définir les propriétés d'un type avec des nombres
--- constants est limité. Les définir à partir des quantités l'est
--- également. Il est donc possible d'utiliser les propriétés des types
--- en entrée pour définir celles des types en sortie. Les propriétés
--- des types en entrée sont fournies par l'application appelante lors
--- du lancement d'une technic. Afin de faire référence aux propriétés
--- d'un type, on déclare une variable accolée au type ciblé via
--- l'opérateur ':'. On peut ensuite à partir de cette variable faire
--- appel à l'une de ses propriétés en faisant suivre la variable d'un
--- point et du nom de la propriété. Les propriétés commencent
--- également par une minuscule (ou un tiret de soulignement)
-
-crush a:Agriculteur(1) b:Ble(x) (delay: x/1000) -> Farine(x/10) {
+crush a:Agriculteur(1) b:Ble(1) (delay: 1) -> Farine(1) {
     nutrition = (10 + a.skill_agriculture) * 2,
     conservation = (+ b.conservation 5),
     quality = 5 + a.skill_agriculture/3
@@ -126,14 +88,14 @@ end
 -- L'opérateur '>>' signifie que la valeur étudiée (ici b.quality)
 -- doit être strictement supérieur au palier pour que la clause soit
 -- validée. Ici, si la qualité du blé est 10 alors on obtient
--- Farine(x/10)
+-- Farine(9)
 
-crush b:Ble(x) (delay: x/1000) ->
+crush b:Ble(1) (delay: 1) ->
     draw b.quality
       -- Avec un blé de bonne qualité on obitient plus de farine
-      >> 10 -> Farine(x/9)
+      >> 10 -> Farine(9)
       -- sinon on obtient x/10 Farine
-      >> 5 -> Farine(x/10)
+      >> 5 -> Farine(10)
       -- en dessous on décide que le blé est trop mauvais, mais la
       -- technic doit quand même retourner un type. On peut donc
       -- renvoyer une quantité de 0: Farine(0). Mais du côté de
@@ -146,13 +108,21 @@ crush b:Ble(x) (delay: x/1000) ->
       >> 3 -> Farine(1)
 end
 
+
+
+-- Une fonction mathématique s'écrit entre parenthèses, commencant par
+-- le nom de la fonction suivi des arguments. Les arguments sont des
+-- expressions et peuvent faire appel aux variables définies dans les
+-- types précédents. La structure actuelle du compilateur exige de
+-- doubler les parenthèses si la quantité de type est définie par un
+-- seul appel de fonction
+
 -- La fonction (random max min) permet de tirer au sort un nombre
 -- entre un maximum et un minimum, (les deux sont inclus).
-
-crush p:Paysan() Ble(x) (delay: x/1000) ->
+crush p:Paysan() Ble(10) (delay: 10) ->
     draw (random p.skillAgricole 100)
-        >> 97 -> Farine(x/9)
-        >> 5 -> Farine(x/10)
+        >> 97 -> Farine(10)
+        >> 5 -> Farine(9)
 end
 
 -- Une technic doit toujours retourner un type. Dans le code
@@ -161,31 +131,31 @@ end
 -- Kraft rencontrera une erreur d'exécution. Il faut donc soit
 -- spécifier un retour par défaut ...
 
-crush p:Paysan() Ble(x) (delay: x/1000) ->
+crush p:Paysan() Ble(10) (delay: 10) ->
     draw (random p.skillAgricole 100)
-        >> 97 -> Farine(x/9)
-        >> 5 -> Farine(x/10)
+        >> 97 -> Farine(10)
+        >> 5 -> Farine(9)
         >> Void(0)
 end
 
 -- ... ou s'assurer qu'un palier sera toujours sélectionné:
 
-crush p:Paysan() Ble(x) (delay: x/1000) ->
+crush p:Paysan() Ble(10) (delay: 10) ->
     draw (random (max 5 p.skillAgricole) 100)
-        >> 97 -> Farine(x/9)
-        >> 5 -> Farine(x/10)
+        >> 97 -> Farine(10)
+        >> 5 -> Farine(9)
         >> Void(0)
 end
 
 -- Il est possible d'utiliser des expressions pour les paliers ainsi
 -- que d'imbriquer les draw-expressions
 
-crush p:Paysan() Ble(x) (delay: x/1000) ->
+crush p:Paysan() Ble(10) (delay: 10) ->
     draw (random p.skillAgricole 100)
-        >> p.skillAgricole * 2 -> Farine(x/9)
+        >> p.skillAgricole * 2 -> Farine(10)
         >> 5 -> draw (random 1 2)
-                    >> 1 -> Farine(x/10)
-                    >> Farine(x/15)
+                    >> 1 -> Farine(9)
+                    >> Farine(8)
         >> Void(0)
 end
 

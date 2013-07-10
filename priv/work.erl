@@ -1,21 +1,41 @@
-todo : ne pas avoir plusieurs clauses pour une même technic
+
+"crush p:Paysan() Ble(1) (delay: 123) -> Farine(1) {quality = p.skill} end"
 
 
-crush p:Paysan(y) Ble(y*2) (delay: x/1000) -> Void(0) end
 
-mod:crush({y,Var_y},{x,Var_x},{'Paysan',Var_p},{'Ble',_},State) ->
-    case kraft:consumeComposants([{'Paysan',Var_y},{'Ble',Var_y*2}],State)
-        of false -> ok
-         ; true ->
-            schedule( draw( Var_y,
-                            [ {getProp(Var_p,skillAgricole)*2,{return,'Farine',Var_x/9}}
-                            , {force,'Void',0}
-                            ]
-                          ),
-                      Var_x/1000)
+callTechnic(boulangerie,crush,{'Paysan','Ble'},Conn)
+
+callTechnic(M,F,Signature,Conn)
+  MM = atomCat('km$', M) %% 'km$boulangerie'
+  Quantities = MM:technic_qtts(F,Signature),
+  case kraft:get_composants(Quantities, Conn#conn.client)
+    of false -> abandon %% On s'arrête là
+     ; {ok, Composants} ->  Composants = [{'Paysan',P},{'Ble',B}]
+        case apply(M,F,Composants)
+          of abandon ->
+              abandon
+           ; {TypeResults,Delay} ->
+              kraft:shedule_release(TypeResults,Delay,State)
+        end
+  end.
+
+
+
+-module('km$boulangerie').
+-export([crush/2]).
+
+technic_info(crush) -> [
+      {{'Paysan','Ble'}, ['Farine','Void']}
+    ].
+
+technic_qtts(crush,{'Paysan','Ble'}) -> [{'Paysan',service},{'Ble',1}].
+
+crush({'Paysan',_p},{'Ble',_}) ->
+ -> %% Le Blé n'a pas de variable défine
+            _p_skill = getprop(_p,skill),
+            _Farine_quality = {quality,_p_skill},
+            { [ {'Farine', 1, [_Farine_quality]}]
+            , _Delay = 123
+            }
     end.
 
-mod:signature(crush) -> {[y,x,{'Paysan',p}], ['Paysan','Ble'], ['Farine','Void']}
-
-
-:callTechnic(boulangerie,crush,{'Paysan','Ble'},[{x,100}],[{'Paysan',P}],Conn)

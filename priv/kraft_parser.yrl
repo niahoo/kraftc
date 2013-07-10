@@ -45,8 +45,8 @@ propdef -> name '=' expression : {unwrap('$1'), '$3'}.
 %% Type(x+5) | Type() | Type(x) | t:Type() | ...
 typeexpr -> typename '(' ')' : {typeexpr, unwrap('$1'), 'ANON', service} .
 typeexpr -> name ':' typename '(' ')' : {typeexpr, unwrap('$3'), unwrap('$1'), service} .
-typeexpr -> typename '(' expression ')' :  {typeexpr, unwrap('$1'), 'ANON', '$3'} .
-typeexpr -> name ':' typename '(' expression ')' :  {typeexpr, unwrap('$3'), unwrap('$1'), '$5'} .
+typeexpr -> typename '(' number ')' :  {typeexpr, unwrap('$1'), 'ANON', '$3'} .
+typeexpr -> name ':' typename '(' number ')' :  {typeexpr, unwrap('$3'), unwrap('$1'), '$5'} .
 
 %% x+y | x+5 | 5/(x+(y-)) | ...
 arithmetic -> expression oper expression : {unwrap('$2'),'$1','$3'}. %% prefix operator
