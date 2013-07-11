@@ -10,12 +10,12 @@ callTechnic(M,F,Signature,Conn)
   Quantities = MM:technic_qtts(F,Signature),
   case kraft:get_composants(Quantities, Conn#conn.client)
     of false -> abandon %% On s'arrête là
-     ; {ok, Composants} ->  Composants = [{'Paysan',P},{'Ble',B}]
+     ; {ok, Composants} ->  % Composants = [{'Paysan',P},{'Ble',B}]
         case apply(M,F,Composants)
           of abandon ->
               abandon
            ; {TypeResults,Delay} ->
-              kraft:shedule_release(TypeResults,Delay,State)
+              kraft:shedule_release(TypeResults,Delay,Conn)
         end
   end.
 

@@ -12,8 +12,9 @@
 -- Pour déterminer une technic, il faut spécifier son nom, les types
 -- de composants en entrée et les types de composants en sortie. Pour
 -- chaque type, on précise entre parenthèses la quantité en entrée ou
--- la quantité en sortie. Deux technics peuvent avoir le même nom. Les
--- noms de types commencent par une majuscule.
+-- la quantité en sortie. Deux technics peuvent avoir le même nom mais
+-- pas la même signature (les types d'item en entrée). Les noms de
+-- types commencent par une majuscule.
 
 crush Ble(1000) -> Farine(100) end
 pain Farine(100) Eau(20) -> Pain(10) end
