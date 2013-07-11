@@ -12,7 +12,7 @@
 -export([format_error/1]).
 
 %% User code. This is placed here to allow extra attributes.
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 27).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 27).
 
 atom(TokenChars) -> list_to_atom(TokenChars).
 
@@ -291,7 +291,7 @@ yysuf(List, N) -> lists:nthtail(N, List).
 %% return signal either an unrecognised character or end of current
 %% input.
 
--file("e:/minsrc/kraft/src/klang/kraft_scanner.erl", 293).
+-file("e:/minsrc/kraft-lang/src/klang/kraft_scanner.erl", 293).
 yystate() -> 21.
 
 yystate(28, [119|Ics], Line, Tlen, _, _) ->
@@ -620,67 +620,67 @@ yyaction(12, _, _, _) ->
 yyaction(_, _, _, _) -> error.
 
 -compile({inline,yyaction_0/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 11).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 11).
 yyaction_0(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_1/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 12).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 12).
 yyaction_1(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_2/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 13).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 13).
 yyaction_2(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_3/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 14).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 14).
 yyaction_3(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_4/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 15).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 15).
 yyaction_4(TokenChars, TokenLine) ->
      { token, { number, TokenLine, to_num (TokenChars) } } .
 
 -compile({inline,yyaction_5/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 16).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 16).
 yyaction_5(TokenChars, TokenLine) ->
      { token, { number, TokenLine, to_num (tofloatexp (TokenChars)) } } .
 
 -compile({inline,yyaction_6/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 17).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 17).
 yyaction_6(TokenChars, TokenLine) ->
      { token, { number, TokenLine, to_num (TokenChars) } } .
 
 -compile({inline,yyaction_7/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 18).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 18).
 yyaction_7(TokenChars, TokenLine) ->
      { token, { number, TokenLine, to_num (TokenChars) } } .
 
 -compile({inline,yyaction_8/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 19).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 19).
 yyaction_8(TokenChars, TokenLine) ->
      { token, { name, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_9/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 20).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 20).
 yyaction_9(TokenChars, TokenLine) ->
      { token, { typename, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_10/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 21).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 21).
 yyaction_10(TokenChars, TokenLine) ->
      { token, { oper, TokenLine, list_to_atom (TokenChars) } } .
 
 -compile({inline,yyaction_11/2}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 22).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 22).
 yyaction_11(TokenChars, TokenLine) ->
      { token, { list_to_atom (TokenChars), TokenLine } } .
 
 -compile({inline,yyaction_12/0}).
--file("e:/minsrc/kraft/priv/kraft_scanner.xrl", 23).
+-file("e:/minsrc/kraft-lang/priv/kraft_scanner.xrl", 23).
 yyaction_12() ->
      skip_token .
 

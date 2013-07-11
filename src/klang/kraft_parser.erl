@@ -1,6 +1,6 @@
 -module(kraft_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 83).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 83).
 unwrap({_,_,V}) -> V.
 
 -file("e:/progs/erl5.10/lib/parsetools-2.0.8/include/yeccpre.hrl", 0).
@@ -187,7 +187,7 @@ yecctoken2string(Other) ->
 
 
 
--file("e:/minsrc/kraft/src/klang/kraft_parser.erl", 190).
+-file("e:/minsrc/kraft-lang/src/klang/kraft_parser.erl", 190).
 
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_0(S, Cat, Ss, Stack, T, Ts, Tzr);
@@ -1114,7 +1114,7 @@ yeccgoto_variable(78, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_17(17, Cat, Ss, Stack, T, Ts, Tzr).
 
 -compile({inline,yeccpars2_2_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 9).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 9).
 yeccpars2_2_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1122,7 +1122,7 @@ yeccpars2_2_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_5_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 17).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 17).
 yeccpars2_5_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1130,7 +1130,7 @@ yeccpars2_5_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_7_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 28).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 28).
 yeccpars2_7_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1138,7 +1138,7 @@ yeccpars2_7_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_13_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 42).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 42).
 yeccpars2_13_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1146,7 +1146,7 @@ yeccpars2_13_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_15_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 44).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 44).
 yeccpars2_15_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1154,7 +1154,7 @@ yeccpars2_15_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_19_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 30).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 30).
 yeccpars2_19_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1162,7 +1162,7 @@ yeccpars2_19_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_22_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 77).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 77).
 yeccpars2_22_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1170,7 +1170,7 @@ yeccpars2_22_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_23_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 56).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 56).
 yeccpars2_23_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1178,7 +1178,7 @@ yeccpars2_23_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_26_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 43).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 43).
 yeccpars2_26_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1186,7 +1186,7 @@ yeccpars2_26_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_28_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 45).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 45).
 yeccpars2_28_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1194,7 +1194,7 @@ yeccpars2_28_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_30_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 77).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 77).
 yeccpars2_30_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1202,7 +1202,7 @@ yeccpars2_30_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_33_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 51).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 51).
 yeccpars2_33_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1210,7 +1210,7 @@ yeccpars2_33_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_34_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 50).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 50).
 yeccpars2_34_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1218,7 +1218,7 @@ yeccpars2_34_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_36_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 48).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 48).
 yeccpars2_36_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1226,7 +1226,7 @@ yeccpars2_36_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_37_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 74).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 74).
 yeccpars2_37_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1234,7 +1234,7 @@ yeccpars2_37_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_39_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 73).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 73).
 yeccpars2_39_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1242,7 +1242,7 @@ yeccpars2_39_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_40_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 57).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 57).
 yeccpars2_40_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1250,7 +1250,7 @@ yeccpars2_40_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_42_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 75).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 75).
 yeccpars2_42_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1258,7 +1258,7 @@ yeccpars2_42_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_43_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 61).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 61).
 yeccpars2_43_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1266,7 +1266,7 @@ yeccpars2_43_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_44_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 22).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 22).
 yeccpars2_44_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1274,7 +1274,7 @@ yeccpars2_44_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_52_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 65).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 65).
 yeccpars2_52_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1282,7 +1282,7 @@ yeccpars2_52_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_53_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 68).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 68).
 yeccpars2_53_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1290,7 +1290,7 @@ yeccpars2_53_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_55_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 71).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 71).
 yeccpars2_55_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1298,7 +1298,7 @@ yeccpars2_55_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_57_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 77).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 77).
 yeccpars2_57_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1306,7 +1306,7 @@ yeccpars2_57_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_59_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 70).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 70).
 yeccpars2_59_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1314,7 +1314,7 @@ yeccpars2_59_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_60_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 67).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 67).
 yeccpars2_60_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1322,7 +1322,7 @@ yeccpars2_60_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_61_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 14).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 14).
 yeccpars2_61_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1330,7 +1330,7 @@ yeccpars2_61_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_62_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 20).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 20).
 yeccpars2_62_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1338,7 +1338,7 @@ yeccpars2_62_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_63_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 21).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 21).
 yeccpars2_63_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1346,7 +1346,7 @@ yeccpars2_63_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_64_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 34).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 34).
 yeccpars2_64_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -1354,7 +1354,7 @@ yeccpars2_64_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_69_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 36).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 36).
 yeccpars2_69_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1362,7 +1362,7 @@ yeccpars2_69_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_71_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 39).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 39).
 yeccpars2_71_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1370,7 +1370,7 @@ yeccpars2_71_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_72_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 35).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 35).
 yeccpars2_72_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1378,7 +1378,7 @@ yeccpars2_72_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_74_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 33).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 33).
 yeccpars2_74_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1386,7 +1386,7 @@ yeccpars2_74_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_75_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 19).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 19).
 yeccpars2_75_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1394,7 +1394,7 @@ yeccpars2_75_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_79_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 29).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 29).
 yeccpars2_79_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1402,7 +1402,7 @@ yeccpars2_79_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_81_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 27).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 27).
 yeccpars2_81_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1410,7 +1410,7 @@ yeccpars2_81_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_84_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 13).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 13).
 yeccpars2_84_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1418,7 +1418,7 @@ yeccpars2_84_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_85_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 16).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 16).
 yeccpars2_85_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1426,7 +1426,7 @@ yeccpars2_85_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_89_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 12).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 12).
 yeccpars2_89_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1434,7 +1434,7 @@ yeccpars2_89_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_92_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 11).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 11).
 yeccpars2_92_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1442,7 +1442,7 @@ yeccpars2_92_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_93_/1}).
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 8).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 8).
 yeccpars2_93_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -1450,4 +1450,4 @@ yeccpars2_93_(__Stack0) ->
   end | __Stack].
 
 
--file("e:/minsrc/kraft/priv/kraft_parser.yrl", 85).
+-file("e:/minsrc/kraft-lang/priv/kraft_parser.yrl", 85).

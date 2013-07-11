@@ -14,7 +14,7 @@ compile-all:
 	@(rebar compile)
 
 
-win:
+win: get-deps vm-args
 	- rm src\klang\kraft_scanner.erl
 	- rm src\klang\kraft_parser.erl
 	- rm ebin -r

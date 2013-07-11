@@ -2,7 +2,7 @@
 
 -export([start/0]).
 -export([t/0]).
-
+-compile({parse_transform, do}).
 
 start() ->
     application:start(kraft),
@@ -13,27 +13,24 @@ start() ->
 t() -> ok.
 
 leexyecc() ->
-            % try
-                gerenate_lexer(),
-                gerenate_parser(),
+    gerenate_lexer(),
+    gerenate_parser(),
 
-                {ok, RawCode} = file:read_file(priv("test_parse.k")),
-                case kraft_scanner:string(binary_to_list(RawCode))
-                    of {ok,Tokens,_EndLine} ->
-                        % log("Tokens:~n~w",[Tokens]),
-                        case kraft_parser:parse(Tokens)
-                            of {ok, ParseTree} ->
-                                log("ParseTree:~n~p",[ParseTree]),
-                                ok
-                             ; {error,ParseError} ->
-                                log("Parse error: ~p",[ParseError])
-                        end
-                     ; LeexError ->
-                            log("Leex error: ~p",[LeexError])
-                end,
-            % catch A:B -> error_logger:error_msg("Compilation fail:~p:~p~n~n",[A,B])
-            % end,
-            ok.
+    do([error_m ||
+        RawCode <- file:read_file(priv("test_parse.k")),
+        Tokens <- scan_kfile(binary_to_list(RawCode)),
+        {ok, log("Tokens:~n~w",[Tokens])},
+        ParseTree <- kraft_parser:parse(Tokens),
+        {ok,log("ParseTree:~n~p",[ParseTree])},
+        ok
+    ]).
+
+scan_kfile(BinString) ->
+    case kraft_scanner:string(BinString)
+        of {ok,Tokens,_EndLine} -> {ok,Tokens}
+         ; Any -> Any
+    end.
+
 gerenate_lexer() ->
     log("Generating kraft lexer."),
     XRL = priv("kraft_scanner.xrl"),
