@@ -1,9 +1,11 @@
 -module(kraft_compiler).
--export([compile/1]).
+-export([compile/2]).
 -compile({parse_transform, do}).
 
-compile(ParseTree) ->
+compile(ParseTree,ModuleName) ->
+
     do([error_m ||
-        klcheck_vardefs:check({parsetree,ParseTree})
+        klcheck_vardefs:check({parsetree,ParseTree}),
+        klget:signatures(ParseTree)
     ]).
 

@@ -24,7 +24,7 @@ leexyecc() ->
         % {ok, log("Tokens:~n~w",[Tokens])},
         ParseTree <- kraft_parser:parse(Tokens),
         {ok, log("ParseTree:~n~p",[ParseTree])},
-        Compiled <- kraft_compiler:compile(ParseTree),
+        Compiled <- kraft_compiler:compile(ParseTree, module_name(File)),
         %% Loaded <- kraft:load_module(filename(File), Binary)
         ok
     ]),
@@ -32,7 +32,12 @@ leexyecc() ->
         of ok -> "Build Passed"
          ; {error,Reason} -> Reason
     end,
-    log("Test Build : ~s",[Ouput]).
+    try
+        log("Test Build : ~s",[Ouput])
+    catch
+        error:badmatch -> log("Test Build : ~p",[Ouput])
+    end.
+
 
 scan_kfile(BinString) ->
     case kraft_scanner:string(BinString)
@@ -101,3 +106,5 @@ klib_dir(App) ->
 priv(X) -> priv_file(kraft,X).
 log(X) -> log(X,[]).
 log(X,Y) -> error_logger:info_msg(string:join([X,"~n~n"],""),Y).
+
+module_name(Filename) -> list_to_atom("km$" ++ filename:basename(Filename,"k")).
