@@ -83,18 +83,22 @@ drawitem -> '>>' expression '->' trexpr : {'$2', '$4'}.
 drawitem -> '>>' trexpr : {'_','$2'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
-%% funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
+funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
 funcall ->  variable '.' name : {'call', 'getprop', chgatom('$3',accessor), '$1'}.
 
 variable -> name : chgatom('$1', 'var').
 
+oper -> '+' : unwrap('$1').
+oper -> '-' : unwrap('$1').
+oper -> '*' : unwrap('$1').
+oper -> '/' : unwrap('$1').
 
 %% x+y | x+5 | 5/(x+(y-)) | ...
 
-arithmetic -> expression '+' expression : {'$2','$1','$3'}.
-arithmetic -> expression '-' expression : {'$2','$1','$3'}.
-arithmetic -> expression '/' expression : {'$2','$1','$3'}.
-arithmetic -> expression '*' expression : {'$2','$1','$3'}.
+arithmetic -> expression '+' expression : {unwrap('$2'),'$1','$3'}.
+arithmetic -> expression '-' expression : {unwrap('$2'),'$1','$3'}.
+arithmetic -> expression '/' expression : {unwrap('$2'),'$1','$3'}.
+arithmetic -> expression '*' expression : {unwrap('$2'),'$1','$3'}.
 
 
 Erlang code.
