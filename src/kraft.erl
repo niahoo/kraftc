@@ -4,6 +4,8 @@
 -export([t/0]).
 -compile({parse_transform, do}).
 
+-define(TEST_FILE, "test_check.k").
+% -define(TEST_FILE, "test_parse.k").
 start() ->
     application:start(kraft),
     leexyecc(),
@@ -16,14 +18,20 @@ leexyecc() ->
     gerenate_lexer(),
     gerenate_parser(),
 
-    do([error_m ||
-        RawCode <- file:read_file(priv("test_parse.k")),
+    BuildAllResult = do([error_m ||
+        RawCode <- file:read_file(priv(?TEST_FILE)),
         Tokens <- scan_kfile(binary_to_list(RawCode)),
-        {ok, log("Tokens:~n~w",[Tokens])},
+        % {ok, log("Tokens:~n~w",[Tokens])},
         ParseTree <- kraft_parser:parse(Tokens),
-        {ok,log("ParseTree:~n~p",[ParseTree])},
+        {ok, log("ParseTree:~n~p",[ParseTree])},
+        CheckedTree <- kraft_checker:check(ParseTree),
         ok
-    ]).
+    ]),
+    Ouput = case BuildAllResult
+        of ok -> "Build Passed"
+         ; {error,Reason} -> Reason
+    end,
+    log("Test Build : ~s",[Ouput]).
 
 scan_kfile(BinString) ->
     case kraft_scanner:string(BinString)

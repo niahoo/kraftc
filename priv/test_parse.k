@@ -12,8 +12,9 @@
 -- Pour déterminer une technic, il faut spécifier son nom, les types
 -- de composants en entrée et les types de composants en sortie. Pour
 -- chaque type, on précise entre parenthèses la quantité en entrée ou
--- la quantité en sortie. Deux technics peuvent avoir le même nom. Les
--- noms de types commencent par une majuscule.
+-- la quantité en sortie. Deux technics peuvent avoir le même nom mais
+-- pas la même signature (les types d'item en entrée). Les noms de
+-- types commencent par une majuscule.
 
 crush Ble(1000) -> Farine(100) end
 pain Farine(100) Eau(20) -> Pain(10) end
@@ -76,6 +77,12 @@ pain vp:VieuxPain(10) ->
     Miettes(50)
 end
 
+-- La quantité en sortie peut-être définie selon une variable
+
+pain vp:VieuxPain(10) c:Cuisinier() ->
+    Pain(c.skillCuisine / 5) {quality = vp.quality - 2}
+    Miettes(50)
+end
 
 -- On voudra parfois comparer une valeur à plusieurs palier et définir
 -- le type de sortie en fonction de cette valeur. Pour cela on utilise

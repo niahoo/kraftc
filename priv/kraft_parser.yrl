@@ -1,7 +1,7 @@
-Nonterminals technicdeflist technicdef typeexprlist typeexpr trexpr
-drawexpr drawlist drawitem metalist metadef technicbody typeresults
-proplist propdef expressionlist expression arithmetic funcall
-variable.
+Nonterminals technicdeflist technicdef typeinputlist typeinput
+typeoutput trexpr drawexpr drawlist drawitem metalist metadef
+technicbody typeresults proplist propdef expressionlist expression
+arithmetic funcall variable.
 
 Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename oper
 name number.
@@ -12,18 +12,18 @@ Rootsymbol technicdeflist.
 technicdeflist -> technicdef technicdeflist : ['$1'|'$2'].
 technicdeflist -> technicdef : ['$1'].
 
-technicdef -> name typeexprlist metalist '->' technicbody 'end' : {technicdef, unwrap('$1'), '$2', '$3', '$5'}.
-technicdef -> name typeexprlist '->' technicbody 'end' : {technicdef, unwrap('$1'), '$2', [], '$4'}.
-technicdef -> name metalist '->' technicbody 'end' : {technicdef, unwrap('$1'), [], '$2', '$3'}.
-technicdef -> name '->' technicbody 'end' : {technicdef, unwrap('$1'), [], [], '$3'}.
+technicdef -> name typeinputlist metalist '->' technicbody 'end' : {technicdef, unwrap_OFF('$1'), '$2', '$3', '$5'}.
+technicdef -> name typeinputlist '->' technicbody 'end' : {technicdef, unwrap_OFF('$1'), '$2', [], '$4'}.
+technicdef -> name metalist '->' technicbody 'end' : {technicdef, unwrap_OFF('$1'), [], '$2', '$3'}.
+technicdef -> name '->' technicbody 'end' : {technicdef, unwrap_OFF('$1'), [], [], '$3'}.
 
-typeexprlist -> typeexpr typeexprlist : ['$1'|'$2'].
-typeexprlist -> typeexpr : ['$1'].
+typeinputlist -> typeinput typeinputlist : ['$1'|'$2'].
+typeinputlist -> typeinput : ['$1'].
 
-typeresults -> typeexpr proplist typeresults : [{'$1','$2'}|'$3'].
-typeresults -> typeexpr typeresults : [{'$1',[]}|'$2'].
-typeresults -> typeexpr proplist : [{'$1','$2'}].
-typeresults -> typeexpr : [{'$1',[]}].
+typeresults -> typeoutput proplist typeresults : [{'$1','$2'}|'$3'].
+typeresults -> typeoutput typeresults : [{'$1',[]}|'$2'].
+typeresults -> typeoutput proplist : [{'$1','$2'}].
+typeresults -> typeoutput : [{'$1',[]}].
 
 technicbody -> trexpr : '$1'.
 
@@ -31,7 +31,7 @@ technicbody -> trexpr : '$1'.
 metalist -> metadef ',' metalist  :  ['$1'|'$3'].
 metalist -> metadef  :  ['$1'].
 metalist -> '(' metalist ')' :  '$2'.
-metadef -> name ':' expression : {unwrap('$1'), '$3'}.
+metadef -> name ':' expression : {unwrap_OFF('$1'), '$3'}.
 
 %% { a = b, c = 5/x , ... }
 proplist -> propdef ',' proplist  :  ['$1'] ++ '$3'.
@@ -40,16 +40,22 @@ proplist -> '{' proplist '}' :  '$2'.
 proplist -> '{' '}' :  [].
 
 %% a = x/2
-propdef -> name '=' expression : {unwrap('$1'), '$3'}.
+propdef -> name '=' expression : {unwrap_OFF('$1'), '$3'}.
+
+%% Type(10) | Type() | t:Type(5) | ...
+typeinput -> typename '(' ')' : {typeinput, unwrap_OFF('$1'), 'ANON', service} .
+typeinput -> name ':' typename '(' ')' : {typeinput, unwrap_OFF('$3'), unwrap_OFF('$1'), service} .
+typeinput -> typename '(' number ')' :  {typeinput, unwrap_OFF('$1'), 'ANON', '$3'} .
+typeinput -> name ':' typename '(' number ')' :  {typeinput, unwrap_OFF('$3'), unwrap_OFF('$1'), '$5'} .
 
 %% Type(x+5) | Type() | Type(x) | t:Type() | ...
-typeexpr -> typename '(' ')' : {typeexpr, unwrap('$1'), 'ANON', service} .
-typeexpr -> name ':' typename '(' ')' : {typeexpr, unwrap('$3'), unwrap('$1'), service} .
-typeexpr -> typename '(' number ')' :  {typeexpr, unwrap('$1'), 'ANON', '$3'} .
-typeexpr -> name ':' typename '(' number ')' :  {typeexpr, unwrap('$3'), unwrap('$1'), '$5'} .
+typeoutput -> typename '(' ')' : {typeoutput, unwrap_OFF('$1'), 'ANON', service} .
+typeoutput -> name ':' typename '(' ')' : {typeoutput, unwrap_OFF('$3'), unwrap_OFF('$1'), service} .
+typeoutput -> typename '(' expression ')' :  {typeoutput, unwrap_OFF('$1'), 'ANON', '$3'} .
+typeoutput -> name ':' typename '(' expression ')' :  {typeoutput, unwrap_OFF('$3'), unwrap_OFF('$1'), '$5'} .
 
 %% x+y | x+5 | 5/(x+(y-)) | ...
-arithmetic -> expression oper expression : {unwrap('$2'),'$1','$3'}. %% prefix operator
+arithmetic -> expression oper expression : {unwrap_OFF('$2'),'$1','$3'}. %% prefix operator
 
 expressionlist -> expression expressionlist : ['$1'|'$2'].
 expressionlist -> expression : ['$1'].
@@ -57,7 +63,7 @@ expressionlist -> expression : ['$1'].
 %% Expression de base
 expression -> arithmetic : '$1'.
 expression -> variable : '$1'.
-expression -> number : unwrap('$1').
+expression -> number : unwrap_OFF('$1').
 expression -> '(' expression ')' : '$2'.
 expression -> funcall : '$1'.
 
@@ -74,11 +80,16 @@ drawlist -> drawitem : ['$1'].
 drawitem -> '>>' expression '->' trexpr : {'$2', '$4'}.
 drawitem -> '>>' trexpr : {'_','$2'}.
 
-funcall -> '(' name expressionlist ')': {'call', unwrap('$2'), '$3'}.
-funcall -> '(' oper expressionlist ')': {'call', unwrap('$2'), '$3'}.
-funcall ->  variable '.' name : {'call', 'getprop', unwrap('$3'), '$1'}.
+funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
+funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
+funcall ->  variable '.' name : {'call', 'getprop', chgatom('$3',accessor), '$1'}.
 
-variable -> name : {var, unwrap('$1')}.
+variable -> name : chgatom('$1', 'var').
 
 Erlang code.
 unwrap({_,_,V}) -> V.
+
+unwrap_OFF(X) -> X.
+
+%% Remplace l'atom en tête de tuple
+chgatom({_,L,V}, Atom) -> {Atom,L,V}.

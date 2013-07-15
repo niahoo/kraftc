@@ -77,6 +77,12 @@ pain vp:VieuxPain(10) ->
     Miettes(50)
 end
 
+-- La quantité en sortie peut-être définie selon une variable
+
+pain vp:VieuxPain(10) c:Cuisinier() ->
+    Pain(c.skillCuisine / 5) {quality = vp.quality - 2}
+    Miettes(50)
+end
 
 -- On voudra parfois comparer une valeur à plusieurs palier et définir
 -- le type de sortie en fonction de cette valeur. Pour cela on utilise
