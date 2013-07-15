@@ -17,14 +17,15 @@ t() -> ok.
 leexyecc() ->
     gerenate_lexer(),
     gerenate_parser(),
-
+    File = priv(?TEST_FILE),
     BuildAllResult = do([error_m ||
-        RawCode <- file:read_file(priv(?TEST_FILE)),
+        RawCode <- file:read_file(File),
         Tokens <- scan_kfile(binary_to_list(RawCode)),
         % {ok, log("Tokens:~n~w",[Tokens])},
         ParseTree <- kraft_parser:parse(Tokens),
         {ok, log("ParseTree:~n~p",[ParseTree])},
-        CheckedTree <- kraft_checker:check(ParseTree),
+        Compiled <- kraft_compiler:compile(ParseTree),
+        %% Loaded <- kraft:load_module(filename(File), Binary)
         ok
     ]),
     Ouput = case BuildAllResult

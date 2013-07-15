@@ -1,13 +1,9 @@
--module(kraft_checker).
+-module(klcheck_vardefs).
 -export([check/1]).
 -compile({parse_transform, do}).
 
-check(ParseTree) ->
-    do([error_m ||
-        _1 <- check_undefined_vars(ParseTree),
-        ok
-    ]).
-
+check({parsetree,ParseTree}) ->
+    check_undefined_vars(ParseTree).
 
 %% Check undef vars -------------------------------------------------
 
@@ -22,8 +18,8 @@ check_undefined_vars2(TechnicDef) ->
         %% Récup des noms définis dans les types
         TypeVars <- get_type_vars(type_exprs(TechnicDef), []),
         %% Récup des noms définis dans les meta (avec comme acc de base ceux des types)
-        TypeAndMetaVars <- get_meta_vars(meta_vars(TechnicDef), TypeVars),
-        ok
+        AllDef <- get_meta_vars(meta_vars(TechnicDef), TypeVars),
+        check_body(body(TechnicDef),AllDef)
     ]).
 
 
@@ -39,22 +35,16 @@ get_type_vars([TypeExpr|Ts], Acc) ->
 %% variables utilisée à droite de ':' sont définies dans le Acc
 get_meta_vars([], Acc) -> {ok, lists:reverse(Acc)};
 get_meta_vars([Metadef|Ms], Acc) ->
-    {{name,_,CurrentName}, Expr} = Metadef,
+    {{name,_,Name}, Expr} = Metadef,
     VarsUsed = get_all_names(Expr),
-    MicroMonad = fun (_Elem, {error,Reason}=Lift) ->
-                        Lift
-                   ; ({Name,Line},  ok) when is_atom(Name), is_integer(Line)->
-                        case lists:member(Name,Acc)
-                            of true -> ok
-                             ; false ->
-                                io:format("~p not member of ~p",[Name,Acc]),
-                                {error, io_lib:format("Undefined var ~p in meta expression on line ~p",[Name,Line])}
-                        end
-                 end,
-    case lists:foldl(MicroMonad,ok,VarsUsed)
+    case ensure_all_member(VarsUsed,Acc)
         of {error,Reason} -> {error,Reason}
-         ; ok -> get_meta_vars(Ms,[CurrentName|Acc])
+         ; ok -> get_meta_vars(Ms,[Name|Acc])
     end.
+
+check_body(Body,Vars) ->
+    VarsUsed = get_all_names(Body),
+    ensure_all_member(VarsUsed,Vars).
 
 %% -----------------------------------------------------------------
 %% TechnicDef Accessors
@@ -63,8 +53,8 @@ get_meta_vars([Metadef|Ms], Acc) ->
 technicdef() -> {technicdef,name,typeexprs,metas,body}.
 
 type_exprs({technicdef,_,TypeExprs,_,_}) -> TypeExprs.
-
 meta_vars({technicdef,_,_,Metas,_}) -> Metas.
+body({_,_,_,_,Body}) -> Body.
 
 %% -----------------------------------------------------------------
 %% Helpers
@@ -90,3 +80,22 @@ gan(T) when is_tuple(T) ->
     gan(tuple_to_list(T));
 
 gan(_) -> nil.
+
+
+%% Vérifie que pour tout element {X,_} de Elems, X est dans la liste List
+ensure_all_member(Elems,List) ->
+    %% On utilise une simple monade : si on renvoie {error,Reason} le
+    %% reste des éléments n'est pas évalué, l'erreur traverse le reste
+    %% de la liste
+    MicroMonad =
+                fun (_Elem, {error,Reason}=Lift) ->
+                        Lift
+                  ; ({Name,Line},  ok) when is_atom(Name), is_integer(Line)->
+                        case lists:member(Name,List)
+                            of true ->
+                                ok
+                             ; false ->
+                                {error, io_lib:format("Undefined var ~p on line ~p",[Name,Line])}
+                        end
+                end,
+    lists:foldl(MicroMonad,ok,Elems).
