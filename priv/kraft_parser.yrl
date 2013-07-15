@@ -1,13 +1,17 @@
 Nonterminals technicdeflist technicdef typeinputlist typeinput
 typeoutput trexpr drawexpr drawlist drawitem metalist metadef
 technicbody typeresults proplist propdef expressionlist expression
-arithmetic funcall variable.
+arithmetic funcall variable oper.
 
-Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename oper
-name number.
+Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename
+name number '+' '-' '*' '/'.
 
 Rootsymbol technicdeflist.
 
+Left 400 '*'.
+Left 400 '/'.
+Left 300 '+'.
+Left 300 '-'.
 
 technicdeflist -> technicdef technicdeflist : ['$1'|'$2'].
 technicdeflist -> technicdef : ['$1'].
@@ -54,8 +58,6 @@ typeoutput -> name ':' typename '(' ')' : {typeoutput, unwrap_OFF('$3'), unwrap_
 typeoutput -> typename '(' expression ')' :  {typeoutput, unwrap_OFF('$1'), 'ANON', '$3'} .
 typeoutput -> name ':' typename '(' expression ')' :  {typeoutput, unwrap_OFF('$3'), unwrap_OFF('$1'), '$5'} .
 
-%% x+y | x+5 | 5/(x+(y-)) | ...
-arithmetic -> expression oper expression : {unwrap_OFF('$2'),'$1','$3'}. %% prefix operator
 
 expressionlist -> expression expressionlist : ['$1'|'$2'].
 expressionlist -> expression : ['$1'].
@@ -81,12 +83,22 @@ drawitem -> '>>' expression '->' trexpr : {'$2', '$4'}.
 drawitem -> '>>' trexpr : {'_','$2'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
-funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
+%% funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
 funcall ->  variable '.' name : {'call', 'getprop', chgatom('$3',accessor), '$1'}.
 
 variable -> name : chgatom('$1', 'var').
 
+
+%% x+y | x+5 | 5/(x+(y-)) | ...
+
+arithmetic -> expression '+' expression : {'$2','$1','$3'}.
+arithmetic -> expression '-' expression : {'$2','$1','$3'}.
+arithmetic -> expression '/' expression : {'$2','$1','$3'}.
+arithmetic -> expression '*' expression : {'$2','$1','$3'}.
+
+
 Erlang code.
+unwrap({V,_}) -> V;
 unwrap({_,_,V}) -> V.
 
 unwrap_OFF(X) -> X.

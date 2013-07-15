@@ -6,7 +6,6 @@ INT = [0-9]+
 NT  = [a-z_][A-Za-z_]*
 NB  = [A-z][A-Za-z_]*
 WS  = ([\000-\s]|%.*|--[^\n]*\n)
-OP  = [\+\-\/\*]
 
 Rules.
 
@@ -20,7 +19,10 @@ draw        : {token,{list_to_atom(TokenChars),TokenLine}}.
 {INT}      : {token,{number,TokenLine,to_num(TokenChars)}}.
 {NT}+      : {token,{name,TokenLine,list_to_atom(TokenChars)}}.
 {NB}+      : {token,{typename,TokenLine,list_to_atom(TokenChars)}}.
-{OP}       : {token,{oper,TokenLine,list_to_atom(TokenChars)}}.
+\+         : {token,{'+',TokenLine}}.
+-          : {token,{'-',TokenLine}}.
+\*         : {token,{'*',TokenLine}}.
+/          : {token,{'/',TokenLine}}.
 [<>(),:={}\.]      : {token,{list_to_atom(TokenChars),TokenLine}}.
 {WS}+      : skip_token.
 
