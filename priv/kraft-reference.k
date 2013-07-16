@@ -182,4 +182,3 @@ revolution ps:Paysans() ->
     >> 10 -> True()
     >> False()
 end
-

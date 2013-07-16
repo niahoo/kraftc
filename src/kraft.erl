@@ -11,6 +11,7 @@ start() ->
     leexyecc(),
     init:stop().
 
+-include_lib("kraft/include/kraft_lang.hrl").
 
 t() -> ok.
 
@@ -23,8 +24,9 @@ leexyecc() ->
         Tokens <- scan_kfile(binary_to_list(RawCode)),
         % {ok, log("Tokens:~n~w",[Tokens])},
         ParseTree <- kraft_parser:parse(Tokens),
-        {ok, log("ParseTree:~n~p",[ParseTree])},
-        Compiled <- kraft_compiler:compile(ParseTree, module_name(File)),
+        KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, module_name(File)),
+        % {ok, log("KraftMod:~n~p",[KraftMod])},
+        Compiled <-  kraft_compiler:compile(KraftMod),
         %% Loaded <- kraft:load_module(filename(File), Binary)
         ok
     ]),
@@ -104,7 +106,7 @@ klib_dir(App) ->
     end.
 
 priv(X) -> priv_file(kraft,X).
-log(X) -> log(X,[]).
-log(X,Y) -> error_logger:info_msg(string:join([X,"~n~n"],""),Y).
+log(X) -> kl:log(X).
+log(X,Y) -> kl:log(X,Y).
 
-module_name(Filename) -> list_to_atom("km$" ++ filename:basename(Filename,"k")).
+module_name(Filename) -> list_to_atom("km$" ++ filename:basename(Filename,".k")).
