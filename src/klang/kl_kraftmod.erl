@@ -4,8 +4,9 @@
 -export([build_signatures/1]).
 
 -include_lib("kraft/include/kraft_lang.hrl").
-from_parsetree(ParseTree, Name) ->
-    {ok, #kraftmod{ parsetree=ParseTree , name=Name , step=1 }}.
+from_parsetree(ParseTree, Filename) ->
+    Name = module_name(Filename),
+    {ok, #kraftmod{ parsetree=ParseTree ,filename=Filename, name=Name , step=1 }}.
 
 
 build_signatures(#kraftmod{parsetree=ParseTree}=KraftMod) ->
@@ -26,3 +27,4 @@ build_signatures(#kraftmod{parsetree=ParseTree}=KraftMod) ->
     {ok, KraftMod#kraftmod{signatures=Signatures,step=2}}.
 
 
+module_name(Filename) -> list_to_atom("km@" ++ filename:basename(Filename,".k")).

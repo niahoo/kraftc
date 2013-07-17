@@ -7,6 +7,9 @@
 
 -export([build_forms/1]).
 
+build_forms(#kraftmod{signatures=undefined}) ->
+    { error,
+      io_lib:format("Signatures are required to build forms",[]) };
 build_forms(#kraftmod{step=?INPUT_STEP}=KraftMod) ->
     LitName = cerl:c_atom(KraftMod#kraftmod.name),
     ModuleInfoFuns = get_module_info(LitName),
@@ -14,10 +17,7 @@ build_forms(#kraftmod{step=?INPUT_STEP}=KraftMod) ->
                           , [cerl:c_fname(module_info,0),cerl:c_fname(module_info,1)]
                           , ModuleInfoFuns
                           ),
-    {ok,KraftMod#kraftmod{forms=Module}};
-build_forms(#kraftmod{step=X}) ->
-    { error,
-      io_lib:format("Step ~w is required to build forms",[?INPUT_STEP]) }.
+    {ok,KraftMod#kraftmod{forms=Module}}.
 
 
 

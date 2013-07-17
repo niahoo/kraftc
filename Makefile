@@ -12,7 +12,6 @@ compile-all:
 	- rm src/klang/kraft_parser.erl
 	- rm ebin -r
 	@(rebar compile)
-	bin/build
 
 
 win: get-deps vm-args
@@ -20,7 +19,6 @@ win: get-deps vm-args
 	- rm src\klang\kraft_parser.erl
 	- rm ebin -r
 	@(rebar compile) 2>NUL
-	bin\build
 
 
 get-deps:

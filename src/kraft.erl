@@ -17,16 +17,15 @@ t() -> ok.
 leexyecc() ->
     gerenate_lexer(),
     gerenate_parser(),
-    File = priv(?TEST_FILE),
+    Filename = priv(?TEST_FILE),
     BuildAllResult = do([error_m ||
-        RawCode <- file:read_file(File),
+        RawCode <- file:read_file(Filename),
         Tokens <- scan_kfile(binary_to_list(RawCode)),
         % {ok, log("Tokens:~n~w",[Tokens])},
         ParseTree <- kraft_parser:parse(Tokens),
-        KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, module_name(File)),
+        KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, Filename),
         % {ok, log("KraftMod:~n~p",[KraftMod])},
         Compiled <-  kraft_compiler:compile(KraftMod),
-        %% Loaded <- kraft:load_module(filename(File), Binary)
         ok
     ]),
     Ouput = case BuildAllResult
@@ -108,4 +107,3 @@ priv(X) -> priv_file(kraft,X).
 log(X) -> kl:log(X).
 log(X,Y) -> kl:log(X,Y).
 
-module_name(Filename) -> list_to_atom("km$" ++ filename:basename(Filename,".k")).

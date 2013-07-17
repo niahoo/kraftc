@@ -1,4 +1,4 @@
--record(kraftmod,  { parsetree , forms, signatures , name, step}).
+-record(kraftmod,  { filename, parsetree , forms, beam, signatures , name, step}).
 
 -type line() :: integer.
 -type technicdef() :: { technicdef
