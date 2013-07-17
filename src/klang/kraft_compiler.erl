@@ -2,7 +2,6 @@
 -export([compile/1]).
 -compile({parse_transform, do}).
 -compile({parse_transform, cut}).
-
 -include_lib("kraft/include/kraft_lang.hrl").
 
 compile(KraftMod) ->

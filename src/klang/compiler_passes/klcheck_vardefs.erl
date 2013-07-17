@@ -11,7 +11,7 @@ check(#kraftmod{parsetree=ParseTree}) ->
 
 check_undefined_vars([]) -> ok;
 check_undefined_vars([TechnicDef|ParseTree]) ->
-    kl:log("Examining vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
+    kl:log("Checking vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
     case check_undefined_vars2(TechnicDef)
         of ok -> check_undefined_vars(ParseTree)
          ; Any -> Any
@@ -43,6 +43,10 @@ get_meta_vars([], Acc) -> {ok, lists:reverse(Acc)};
 get_meta_vars([Metadef|Ms], Acc) ->
     {{name,_,Name}, Expr} = Metadef,
     VarsUsed = get_all_vars(Expr),
+    case VarsUsed
+        of [] -> kl:log("No vars used in metadefs")
+         ; _ -> kl:log("Checking vars used in metadefs")
+    end,
     case ensure_all_member(VarsUsed,Acc)
         of {error,Reason} -> {error,Reason}
          ; ok -> get_meta_vars(Ms,[Name|Acc])
@@ -50,6 +54,10 @@ get_meta_vars([Metadef|Ms], Acc) ->
 
 check_body(Body,Vars) ->
     VarsUsed = get_all_vars(Body),
+    case VarsUsed
+        of [] -> kl:log("No vars used in body")
+         ; _ -> kl:log("Checking vars used in body")
+    end,
     ensure_all_member(VarsUsed,Vars).
 
 %% -----------------------------------------------------------------

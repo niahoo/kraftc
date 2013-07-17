@@ -82,7 +82,7 @@ fun_print_yecc_error(Type) ->
             , yecc:format_error(Reason) ]
         end,
         Msg = [F("~p occured in file ~p~n",[Type, Filename])]
-        ++ lists:map(FL, ErrorInfos),
+        ++ lists:map(FL, ErrorInfos) ++ " \nend warnings",
         log(Msg)
     end.
 
