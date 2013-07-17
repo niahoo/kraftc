@@ -11,7 +11,7 @@ check(#kraftmod{parsetree=ParseTree}) ->
 
 check_undefined_vars([]) -> ok;
 check_undefined_vars([TechnicDef|ParseTree]) ->
-    kl:log("Examining vardefs in '~p'",[kl_technicdef:name(TechnicDef)]),
+    kl:log("Examining vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
     case check_undefined_vars2(TechnicDef)
         of ok -> check_undefined_vars(ParseTree)
          ; Any -> Any
@@ -72,13 +72,14 @@ ensure_all_member(Elems,Pool) ->
                 fun (_Elem, {error,Reason}=Lift) ->
                         Lift
                   ; ({var,Line,Name},  ok) when is_atom(Name), is_integer(Line)->
-                        kl:log("Is ~p member of ~p ?",[Name,Pool]),
+                        kl:log("Check if ~p is defined ... ",[Name],nnl),
+                        receive after 100 -> ok end,
                         case lists:member(Name,Pool)
                             of true ->
-                                kl:log("Yes !"),
+                                kl:log("yes"),
                                 ok
                              ; false ->
-                                kl:log("Noo :("),
+                                kl:log("no"),
                                 {error, io_lib:format("Undefined var ~p on line ~p",[Name,Line])}
                         end
                 end,

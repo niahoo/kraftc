@@ -8,8 +8,7 @@
 % -define(TEST_FILE, "test_parse.k").
 start() ->
     application:start(kraft),
-    leexyecc(),
-    init:stop().
+    leexyecc().
 
 -include_lib("kraft/include/kraft_lang.hrl").
 
@@ -37,7 +36,7 @@ leexyecc() ->
     try
         log("Test Build : ~s",[Ouput])
     catch
-        error:badmatch -> log("Test Build : ~p",[Ouput])
+        error:badarg -> log("Test Build : ~p",[Ouput])
     end.
 
 
@@ -51,7 +50,7 @@ gerenate_lexer() ->
     log("Generating kraft lexer."),
     XRL = priv("kraft_scanner.xrl"),
     ScannerFile = filename:join([klib_dir(kraft), "src","klang","kraft_scanner.erl"]),
-    error_logger:info_msg("Compiling lexer file ~p~n~n",[XRL]),
+    kl:log("Compiling lexer file ~p",[XRL]),
     {ok, ScannerFile} = leex:file(XRL, [{scannerfile, ScannerFile}]),
     recomp(kraft_scanner),
     log("Lexer Generated.").
@@ -60,7 +59,7 @@ gerenate_parser() ->
     log("Generating kraft parser."),
     YRL = priv("kraft_parser.yrl"),
     ParserFile = filename:join([klib_dir(kraft), "src","klang","kraft_parser.erl"]),
-    error_logger:info_msg("Compiling parser file ~p~n~n",[YRL]),
+    kl:log("Compiling parser file ~p",[YRL]),
     {ok, ParserFile, Warnings} = yecc:file(YRL, [{parserfile, ParserFile},{return_warnings,true},{report_warnings,false}]),
     lists:map(fun_print_yecc_error(warning), Warnings),
     recomp(kraft_parser),

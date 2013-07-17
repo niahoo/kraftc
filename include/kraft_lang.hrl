@@ -1,4 +1,4 @@
--record(kraftmod,  {parsetree,name,step}).
+-record(kraftmod,  { parsetree , forms, signatures , name, step}).
 
 -type line() :: integer.
 -type technicdef() :: { technicdef
@@ -11,4 +11,4 @@
 -type typeinput() :: { typeinput
                      , {typename,line(), Name :: atom() }
                      }.
-
+-type metadef() :: [{{name,line,atom()},term()}].

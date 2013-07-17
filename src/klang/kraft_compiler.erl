@@ -8,14 +8,23 @@ compile(KraftMod) ->
 
     CompileResult = do([error_m ||
         klcheck_vardefs:check(KraftMod)
-      , KraftMod2 <- kl_kraftmod:build_signatures(KraftMod)
-      , KraftMod2
+      , KraftModSigns <- kl_kraftmod:build_signatures(KraftMod)
+      , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
+      , Linted <- core_lint:module(KraftWithCore#kraftmod.forms)
+      , return(kl:log("Lint ~p",[Linted]))
+      , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
+      , get_beam(KraftWithCore)
     ]),
-    kl:log("Compile result ~n~p",[CompileResult]),
+    try
+        kl:log("Compile result ~n~s",[CompileResult])
+    catch
+        error:badarg -> kl:log("Compile result ~n~p",[CompileResult])
+    end,
     case CompileResult
         of {error,Reason} -> {error,Reason}
          ; #kraftmod{}=KM -> {ok,KM}
-         % ; Any -> {error,Any}
+         ; Any -> {error,Any}
     end.
     % CompiledModule.
 
+get_beam(#kraftmod{forms=Forms}) -> ok.
