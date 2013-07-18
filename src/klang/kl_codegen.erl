@@ -12,21 +12,23 @@ build_forms(#kraftmod{signatures=Signatures}=KraftMod) ->
     LitModuleName = cerl:c_atom(KraftMod#kraftmod.name),
     ModuleInfoFuns = get_module_info(LitModuleName),
     TechnicInfos = get_technic_infos(Signatures),
+    TechnicDefs = kl_parsetree:group_technicdefs(ParseTree),
+
+    {TechnicsExports,TechnicsBodies} = compile_technics(TechnicDefs),
     Module = cerl:c_module( LitModuleName
                           , [ cerl:c_fname(module_info,0)
                             , cerl:c_fname(module_info,1)
                             , cerl:c_fname(technics_infos,0)
                             , cerl:c_fname(technic_infos,1)
-                            ]
+                            ] ++ TechnicsExports
                           , lists:append([
                               ModuleInfoFuns
                            ,  TechnicInfos
+                           ,  TechnicsBodies
                             ])
 
                           ),
     {ok,KraftMod#kraftmod{forms=Module}}.
-
-
 
 get_module_info(LitName) ->
     Key = cerl:c_var('Key'),
@@ -87,3 +89,8 @@ deep_literal(Float) when is_float(Float) ->
 deep_literal(Int) when is_integer(Int) ->
     kl:log("lit. ~w",[Int]),
     cerl:c_int(Int).
+
+compile_technics([]) -> [];
+compile_technics([TD|TechnicDefs]) ->
+
+[ok.
