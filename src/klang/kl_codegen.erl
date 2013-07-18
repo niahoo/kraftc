@@ -16,6 +16,7 @@ build_forms(#kraftmod{signatures=Signatures}=KraftMod) ->
                           , [ cerl:c_fname(module_info,0)
                             , cerl:c_fname(module_info,1)
                             , cerl:c_fname(technics_infos,0)
+                            , cerl:c_fname(technic_infos,1)
                             ]
                           , lists:append([
                               ModuleInfoFuns
@@ -38,9 +39,13 @@ get_module_info(LitName) ->
     ].
 
 get_technic_infos(Signatures) ->
-  [ { cerl:c_fname(technics_infos,0)
-    , cerl:c_fun([], signatures_literal(Signatures))
-    } ].
+    Key = cerl:c_var('Key'),
+    [ { cerl:c_fname(technics_infos,0)
+      , cerl:c_fun([], signatures_literal(Signatures))
+      }
+    , { cerl:c_fname(technic_infos,1)
+      , cerl:c_fun([Key], signatures_literal_case(Signatures,Key))
+      } ].
 
 ccall(M,F,A) when is_atom(M), is_atom(F), is_list(A) ->
     LitM = cerl:c_atom(M),
@@ -49,15 +54,16 @@ ccall(M,F,A) when is_atom(M), is_atom(F), is_list(A) ->
 
 signatures_literal(Signatures) ->
     deep_literal(Signatures).
-%     LitSigns = [litsignature(S) || S <- Signatures],
-%     cerl:make_list(LitSigns).
 
-
-% litsignature({TechnicName, Clauses}) when is_atom(TechnicName)
-%                                         , is_list(Clauses) ->
-%     {cerl:c_atom()}
-
-
+signatures_literal_case(Signatures,Arg) ->
+    MkCaseClause =
+        fun({TechnicName,TechnicClauses}) ->
+            cerl:c_clause([cerl:c_atom(TechnicName)], deep_literal(TechnicClauses))
+        end,
+    WildCardVar = cerl:c_var('_Any'),
+    WildCardClause = cerl:c_clause([WildCardVar], cerl:c_atom(undefined)),
+    CaseClauses = [MkCaseClause(S) || S <- Signatures] ++ [WildCardClause],
+    cerl:c_case(Arg,CaseClauses).
 
 
 deep_literal(List) when is_list(List) ->
@@ -73,6 +79,10 @@ deep_literal(Tuple) when is_tuple(Tuple) ->
 deep_literal(Atom) when is_atom(Atom) ->
     kl:log("lit. ~w",[Atom]),
     cerl:c_atom(Atom);
+
+deep_literal(Float) when is_float(Float) ->
+    kl:log("lit. ~w",[Float]),
+    cerl:c_float(Float);
 
 deep_literal(Int) when is_integer(Int) ->
     kl:log("lit. ~w",[Int]),
