@@ -1,5 +1,5 @@
 -module(kl).
--export([log/1,log/2,log/3]).
+-export([log/1,log/2,log/3,to_list/1]).
 -export([find2tuples/2,find3tuples/2]).
 
 % -define(LOG,error_logger:info_msg).
@@ -58,3 +58,9 @@ f2t(Tag,Tuple) when is_tuple(Tuple) ->
     f2t(Tag,tuple_to_list(Tuple));
 
 f2t(_,_) -> [].
+
+
+to_list(X) when is_integer(X) -> integer_to_list(X);
+to_list(X) when is_binary(X)  -> binary_to_list(X);
+to_list(X) when is_atom(X)    -> atom_to_list(X);
+to_list(X) when is_list(X)    -> X.

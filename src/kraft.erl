@@ -25,7 +25,7 @@ leexyecc() ->
         ParseTree <- kraft_parser:parse(Tokens),
         KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, Filename),
         % {ok, log("KraftMod:~n~p",[KraftMod])},
-        Compiled <-  kraft_compiler:compile(KraftMod),
+        _Compiled <-  kraft_compiler:compile(KraftMod),
         ok
     ]),
     Ouput = case BuildAllResult
@@ -77,7 +77,7 @@ recomp(Module) ->
 fun_print_yecc_error(Type) ->
     fun ({Filename, ErrorInfos}) ->
         F = fun io_lib:format/2,
-        FL = fun({ErrorLine, Module, Reason}) ->
+        FL = fun({ErrorLine, _Module, Reason}) ->
             [ F("line ~p : ",[ErrorLine])
             , yecc:format_error(Reason) ]
         end,
