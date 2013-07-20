@@ -97,9 +97,9 @@ uuid_loop(X) ->
 uuid() ->
     kl_uuid_server ! {get_uuid,self()},
     receive
-        {uuid,UUID} -> {ok,UUID}
+        {uuid,UUID} -> UUID
     after 1000
-        -> error
+        -> error(uuid_timeout)
     end.
 
 

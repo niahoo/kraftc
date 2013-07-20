@@ -156,6 +156,11 @@ compile_expr({call,CallName,Args}) ->
     LitArgs = lists:map(fun compile_expr/1, Args),
     ccall(kl_lib,CallName,LitArgs);
 
+compile_expr({draw,ToMAtch,Clauses}) ->
+    MatchVar = make_var(cat_atoms('Match',kl:uuid())),
+    CaseClauses = [draw_clause(C,MatchVar) || C <- Clauses] ++ [draw_clause_error_clause()],
+    cerl:c_case(compile_expr(ToMAtch), CaseClauses);
+
 compile_expr(Other) ->
     kl:write_paper(Other),
     deep_literal(Other).
@@ -168,6 +173,13 @@ compile_propdefs(PropsExprs) ->
 compile_propdef({{name,_,Name},Expr}) ->
     cerl:c_tuple([cerl:c_atom(Name),compile_expr(Expr)]).
 
+%% ------ Draws ----------------------------------------------
+
+draw_clause({ToBeat,Result},MatchVar) ->
+    LitToBeat = compile_expr(ToBeat),
+    ComparisonGuard = ccall(erlang,'>',[MatchVar,LitToBeat]),
+    cerl:c_clause([MatchVar],ComparisonGuard,compile_expr(Result)).
+    % cerl:c_clause([MatchVar],compile_expr(Result)).
 
 
 %%% ------------------------------------------------------------------
@@ -175,7 +187,7 @@ compile_propdef({{name,_,Name},Expr}) ->
 %%% ------------------------------------------------------------------
 
 type_expr_to_typevar({_,{typename,_Line,TypeName}, 'ANON',          _Qtty}) ->
-    AnonVar = cerl:c_var(cat_atoms('_Anon_',kl:unok(kl:uuid()))),
+    AnonVar = cerl:c_var(cat_atoms('_Anon_',kl:uuid())),
     cerl:c_tuple([cerl:c_atom(TypeName),AnonVar]);
 type_expr_to_typevar({_,{typename,_,TypeName},     {name,_,Varname},_Qtty}) ->
     TypeVar = make_var(Varname),
@@ -198,9 +210,15 @@ make_var_list(Arity,Acc) when Arity > -1 ->
     Var = cerl:c_var(cat_atoms('_ktArg',Arity)),
     make_var_list(Arity-1,[Var|Acc]).
 
+draw_clause_error_clause() ->
+    Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
+    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(draw_clause)])).
+case_clause_error_clause() ->
+    Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
+    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(case_clause)])).
 function_clause_error_clause() ->
-    Any = cerl:c_var('_Any'),
-    cerl:c_clause([Any], ccall(erlang,error,[cerl:c_atom(function_clause)])).
+    Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
+    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(function_clause)])).
 
 %% @todo apparemment c'est inutile comme fonction deep litteral vu que
 %% au final seule la structure parente se retrouve dans un tuple

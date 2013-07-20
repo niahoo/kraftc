@@ -37,7 +37,8 @@ leexyecc() ->
         log("Test Build : ~s",[Ouput])
     catch
         error:badarg -> log("Test Build : ~p",[Ouput])
-    end.
+    end,
+    spawn( fun() -> kl:log("kl:t() ~p",[catch kl:t()]) end).
 
 
 scan_kfile(BinString) ->
