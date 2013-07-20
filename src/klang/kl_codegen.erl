@@ -127,7 +127,7 @@ comptbody({{Name,Arity},TDs}) ->
     %% Définition d'une structure 'case' à laquelle on ajoutera les
     %% clauses de chaque body. En fait, c'est la liste des variables
     %% elle-même
-    BodyClauses = [comptbodyclause(Arity,TD) || TD <- TDs],
+    BodyClauses = [comptbodyclause(Arity,TD) || TD <- TDs] ++ [function_clause_error_clause()],
     Body = cerl:c_case(cerl:make_list(HeadVars),BodyClauses),
     { cerl:c_fname(Name,Arity)
     , cerl:c_fun(HeadVars, Body)
@@ -135,12 +135,20 @@ comptbody({{Name,Arity},TDs}) ->
 
 
 comptbodyclause(Arity,TD) ->
-    Pattern = type_exprs_to_pattern(kl_technicdef:type_exprs(TD)),
+    Vars = [type_expr_to_typevar(TE) || TE <- kl_technicdef:type_exprs(TD)],
+    %% ON match une liste d'arguments donc il faut une liste
+    Pattern = cerl:make_list(Vars),
     kl:log("Pattern ~p",[Pattern]),
     cerl:c_clause([Pattern],Pattern).
 
 
-type_exprs_to_pattern(_) -> deep_literal(pattern).
+type_expr_to_typevar({_,{typename,_Line,TypeName}, 'ANON',          _Qtty}) ->
+    AnonVar = cerl:c_var(cat_atoms('_Anon_',kl:unok(kl:uuid()))),
+    cerl:c_tuple([cerl:c_atom(TypeName),AnonVar]);
+type_expr_to_typevar({_,{typename,_,TypeName},     {name,_,Varname},_Qtty}) ->
+    TypeVar = make_typevar(Varname),
+    cerl:c_tuple([cerl:c_atom(TypeName),TypeVar]).
+
 %%% ------------------------------------------------------------------
 %%% HELPERS
 %%% ------------------------------------------------------------------
@@ -161,3 +169,7 @@ make_typevar_list(0,    Acc) -> lists:reverse(Acc);
 make_typevar_list(Arity,Acc) when Arity > -1 ->
     Var = cerl:c_var(cat_atoms('_ktArg',Arity)),
     make_typevar_list(Arity-1,[Var|Acc]).
+
+function_clause_error_clause() ->
+    Any = cerl:c_var('_Any'),
+    cerl:c_clause([Any], ccall(erlang,error,[cerl:c_atom(function_clause)])).

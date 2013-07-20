@@ -10,7 +10,7 @@ compile(KraftMod) ->
         klcheck_vardefs:check(KraftMod)
       , KraftModSigns <- kl_kraftmod:build_signatures(KraftMod)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
-      , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
+      % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
       , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
       , Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
       , return(kl:log("Lint ~p",[Linted]))

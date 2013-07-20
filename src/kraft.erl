@@ -8,6 +8,8 @@
 % -define(TEST_FILE, "test_parse.k").
 start() ->
     application:start(kraft),
+    % kl:start_uuid(), %%@todo check pourquoi dans le do_boot ça veut pas
+    spawn( fun() -> kl:start_uuid() end),
     leexyecc().
 
 -include_lib("kraft/include/kraft_lang.hrl").

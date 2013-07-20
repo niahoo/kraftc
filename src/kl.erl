@@ -1,6 +1,8 @@
 -module(kl).
 -export([log/1,log/2,log/3,to_list/1]).
 -export([find2tuples/2,find3tuples/2]).
+-export([start_uuid/0,uuid/0]).
+-export([unok/1]).
 
 % -define(LOG,error_logger:info_msg).
 -define(LOG,io:format).
@@ -64,3 +66,23 @@ to_list(X) when is_integer(X) -> integer_to_list(X);
 to_list(X) when is_binary(X)  -> binary_to_list(X);
 to_list(X) when is_atom(X)    -> atom_to_list(X);
 to_list(X) when is_list(X)    -> X.
+
+
+%% @todo gen server ?
+start_uuid() ->
+    register(kl_uuid_server, spawn( fun() -> uuid_loop(1) end )).
+
+uuid_loop(X) ->
+    receive {get_uuid, From} -> From ! {uuid,X} end,
+    uuid_loop(X+1).
+
+uuid() ->
+    kl_uuid_server ! {get_uuid,self()},
+    receive
+        {uuid,UUID} -> {ok,UUID}
+    after 1000
+        -> error
+    end.
+
+
+unok({ok,V}) -> V.
