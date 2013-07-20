@@ -1,8 +1,5 @@
-crush b:Ble(1) (delay: 1) -> Farine(0.5)  end
-
-crush a:Agriculteur(1) b:Ble(1) (delay: 1) -> Farine(1)  end
-
-
-pain Farine(100) Eau(20) -> Pain(10) end
-
-
+crush a:Agriculteur() Ble(10) (delay: 10) ->
+    draw 10 -- (random a.skillAgricole 100)
+        >> 97 -> Farine(10)
+        >> 5 -> Farine(9)
+end

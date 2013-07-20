@@ -1,0 +1,7 @@
+{draw,{number,2,10},
+      [{{number,3,97},
+        {return,[{{typeoutput,{typename,3,'Farine'},'ANON',{number,3,10}},
+                  []}]}},
+       {{number,4,5},
+        {return,[{{typeoutput,{typename,4,'Farine'},'ANON',{number,4,9}},
+                  []}]}}]}

@@ -32,15 +32,14 @@ compile(KraftMod) ->
 build_beam(#kraftmod{filename=undefined}) ->
   {error, "Compiling a kraft module requires a filename"};
 build_beam(#kraftmod{forms=Forms, filename=Filename}=KraftMod) ->
-   {ok,_ModuleName,Beam,Warnings} = compile:forms( Forms
+    {ok,_ModuleName,Beam,Warnings} = compile:forms( Forms
                                , [binary, from_core, return_errors, return_warnings, {source, Filename}]
                                ),
-   if
-      length(Warnings) > 0 ->
-        lists:map(kl:log("Warning : ~p",[_]), Warnings)
-      ; true -> ok
-  end,
-  {ok,KraftMod#kraftmod{beam=Beam}}.
+    if length(Warnings) > 0 ->
+        [kl:log("Warning: ~p",[W]) || W <- Warnings]
+     ; true -> ok
+    end,
+    {ok,KraftMod#kraftmod{beam=Beam}}.
 
 load_klmodule(#kraftmod{name=Name,beam=Beam,filename=Filename}=_KraftMod) ->
     {module, Name} = code:load_binary(Name,Filename,Beam),

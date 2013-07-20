@@ -8,8 +8,7 @@
 % -define(TEST_FILE, "test_parse.k").
 start() ->
     application:start(kraft),
-    % kl:start_uuid(), %%@todo check pourquoi dans le do_boot ça veut pas
-    spawn( fun() -> kl:start_uuid() end),
+    kl:start_uuid(),
     leexyecc().
 
 -include_lib("kraft/include/kraft_lang.hrl").
@@ -88,24 +87,10 @@ fun_print_yecc_error(Type) ->
         log(Msg)
     end.
 
-priv_file(App, File) when is_atom(App), is_list(File) ->
-    PrivDir = case code:priv_dir(App)
-        of {error, bad_name} ->
-            Ebin = filename:dirname(code:which(App)),
-            filename:join(filename:dirname(Ebin), "priv")
-         ; Dir -> Dir
-    end,
-    filename:join(PrivDir, File).
 
-klib_dir(App) ->
-    case code:lib_dir(App)
-        of {error, bad_name} ->
-            Ebin = filename:dirname(code:which(App)),
-            filename:dirname(Ebin)
-        ; LibDir -> LibDir
-    end.
-
+klib_dir(X) -> kl:klib_dir(X).
 priv(X) -> priv_file(kraft,X).
+priv_file(App,X) -> kl:priv_file(App,X).
 log(X) -> kl:log(X).
 log(X,Y) -> kl:log(X,Y).
 

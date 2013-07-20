@@ -84,7 +84,7 @@ drawitem -> '>>' trexpr : {'_','$2'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
 funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
-funcall ->  variable '.' name : {'call', 'getprop', chgatom('$3',accessor), '$1'}.
+funcall ->  variable '.' name : {'call', 'getprop', [chgatom('$3',key), '$1']}.
 
 variable -> name : chgatom('$1', 'var').
 

@@ -1,8 +1,12 @@
 -module(kl).
+-export([t/0]).
 -export([log/1,log/2,log/3,to_list/1]).
 -export([find2tuples/2,find3tuples/2]).
 -export([start_uuid/0,uuid/0]).
 -export([unok/1]).
+-export([write_paper/1]).
+-export([priv_file/1,priv_file/2,klib_dir/1]).
+
 
 % -define(LOG,error_logger:info_msg).
 -define(LOG,io:format).
@@ -11,6 +15,20 @@
 % -define(LOGLN,"~n~n").
 
 -compile({parse_transform, cut}).
+
+
+% t() -> km@test_check:crush({'Ble',varBle}).
+t() ->
+    Agriculteur = kdict:from_list([
+        {skill_agriculture,5}
+    ]),
+    Ble = kdict:from_list([
+        {conservation,3}
+    ]),
+     km@test_check:crush({'Agriculteur',Agriculteur},{'Ble',Ble}).
+    % VieuxPain = kdict:from_list([{quality,3}]),
+    % km@test_check:pain({'VieuxPain',VieuxPain}).
+
 
 %% nnl signifie "no newline"
 log(X) -> log(X,[]).
@@ -86,3 +104,26 @@ uuid() ->
 
 
 unok({ok,V}) -> V.
+
+%% écrit un terme erlang vers le fichier priv/paper
+write_paper(Term) ->
+    Path = priv_file("paper"),
+    file:write_file(Path,io_lib:fwrite("~p",[Term])).
+
+priv_file(File) -> priv_file(kraft,File).
+priv_file(App, File) when is_atom(App), is_list(File) ->
+    PrivDir = case code:priv_dir(App)
+        of {error, bad_name} ->
+            Ebin = filename:dirname(code:which(App)),
+            filename:join(filename:dirname(Ebin), "priv")
+         ; Dir -> Dir
+    end,
+    filename:join(PrivDir, File).
+
+klib_dir(App) ->
+    case code:lib_dir(App)
+        of {error, bad_name} ->
+            Ebin = filename:dirname(code:which(App)),
+            filename:dirname(Ebin)
+        ; LibDir -> LibDir
+    end.
