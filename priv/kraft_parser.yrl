@@ -79,7 +79,7 @@ drawexpr -> 'draw' expression drawlist: {'draw','$2','$3'}.
 drawlist -> drawitem drawlist : ['$1'|'$2'].
 drawlist -> drawitem : ['$1'].
 
-drawitem -> '>>' expression '->' trexpr : {'$2', '$4'}.
+drawitem -> '>>' number '->' trexpr : {'$2', '$4'}.
 drawitem -> '>>' trexpr : {'_','$2'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.

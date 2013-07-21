@@ -150,9 +150,12 @@ compile_expr({call,'/',[Operand1,Operand2]}) -> ccall(erlang,'/',[compile_expr(O
 
 compile_expr({call,{name,_Line,CallName},Args}) ->
     compile_expr({call,CallName,Args});
+
 compile_expr({call,getprop,[{key,_,Key},Var]}) ->
     compile_expr({call,getprop,[Key,Var]});
+
 compile_expr({call,CallName,Args}) ->
+    kl:log("AAAARGHS ~p",[Args]),
     LitArgs = lists:map(fun compile_expr/1, Args),
     ccall(kl_lib,CallName,LitArgs);
 
@@ -160,6 +163,8 @@ compile_expr({draw,ToMAtch,Clauses}) ->
     MatchVar = make_var(cat_atoms('Match',kl:uuid())),
     CaseClauses = [draw_clause(C,MatchVar) || C <- Clauses] ++ [draw_clause_error_clause()],
     cerl:c_case(compile_expr(ToMAtch), CaseClauses);
+
+compile_expr(Atom) when is_atom(Atom) -> cerl:c_atom(Atom);
 
 compile_expr(Other) ->
     kl:write_paper(Other),
@@ -175,6 +180,8 @@ compile_propdef({{name,_,Name},Expr}) ->
 
 %% ------ Draws ----------------------------------------------
 
+draw_clause({'_',Result},MatchVar) ->
+    cerl:c_clause([MatchVar], compile_expr(Result));
 draw_clause({ToBeat,Result},MatchVar) ->
     LitToBeat = compile_expr(ToBeat),
     ComparisonGuard = ccall(erlang,'>',[MatchVar,LitToBeat]),

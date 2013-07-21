@@ -19,16 +19,19 @@
 
 % t() -> km@test_check:crush({'Ble',varBle}).
 t() ->
-    Agriculteur = kdict:from_list([
-        {skill_agriculture,5}
-    ]),
-    Ble = kdict:from_list([
-        {conservation,3}
-    ]),
-     km@test_check:crush({'Agriculteur',Agriculteur},{'Ble',Ble}).
+    % Agriculteur = kdict:from_list([
+    %     {skill_agriculture,5}
+    % ]),
+    % Ble = kdict:from_list([
+    %     {conservation,3}
+    % ]),
+    %  km@test_check:crush({'Agriculteur',Agriculteur},{'Ble',Ble}).
     % VieuxPain = kdict:from_list([{quality,3}]),
     % km@test_check:pain({'VieuxPain',VieuxPain}).
-
+    Agriculteurs = kdict:from_list([
+        {faim,100}
+    ]),
+     km@test_check:revolution({'Agriculteurs',Agriculteurs}).
 
 %% nnl signifie "no newline"
 log(X) -> log(X,[]).

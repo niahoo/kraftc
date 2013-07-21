@@ -16,12 +16,8 @@ compile(KraftMod) ->
       , return(kl:log("Lint ~p",[Linted]))
       , KraftModBeam <- build_beam(KraftWithCore)
       , load_klmodule(KraftModBeam)
+      , (KraftModBeam)
     ]),
-    try
-        kl:log("Compile result ~n~s",[CompileResult])
-    catch
-        error:badarg -> kl:log("Compile result ~n~p",[CompileResult])
-    end,
     case CompileResult
         of {error,Reason} -> {error,Reason}
          ; #kraftmod{}=KM -> {ok,KM}
@@ -43,7 +39,7 @@ build_beam(#kraftmod{forms=Forms, filename=Filename}=KraftMod) ->
 
 load_klmodule(#kraftmod{name=Name,beam=Beam,filename=Filename}=_KraftMod) ->
     {module, Name} = code:load_binary(Name,Filename,Beam),
-    ok.
+    {ok,Name}.
 
 
 %% helper pour les monades -> force un 3 tuple en 2 tuple

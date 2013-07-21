@@ -1,6 +1,7 @@
 -module(kraft).
 
 -export([start/0]).
+-export([initstop/0]).
 -export([t/0]).
 -compile({parse_transform, do}).
 
@@ -14,6 +15,8 @@ start() ->
 -include_lib("kraft/include/kraft_lang.hrl").
 
 t() -> ok.
+initstop() ->
+    receive after 200 -> init:stop() end.
 
 leexyecc() ->
     gerenate_lexer(),
@@ -29,16 +32,17 @@ leexyecc() ->
         _Compiled <-  kraft_compiler:compile(KraftMod),
         ok
     ]),
-    Ouput = case BuildAllResult
-        of ok -> "Build Passed"
-         ; {error,Reason} -> Reason
-    end,
-    try
-        log("Test Build : ~s",[Ouput])
-    catch
-        error:badarg -> log("Test Build : ~p",[Ouput])
-    end,
-    spawn( fun() -> kl:log("kl:t() ~p",[catch kl:t()]) end).
+    case BuildAllResult
+        of ok ->
+            log("Test Build : Build Passed"),
+            spawn( fun() -> kl:log("kl:t() ~p",[catch kl:t()]) end)
+         ; {error,Reason} ->
+            case catch log("Test Build : Error, ~s",[Reason])
+                of ok -> ok
+                 ; _ -> log("Test Build : Error ~p",[Reason])
+            end
+         ; Other -> log("Test Build : Undefined ~p",[Other])
+    end.
 
 
 scan_kfile(BinString) ->

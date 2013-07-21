@@ -126,20 +126,20 @@ end
 
 -- La fonction (random max min) permet de tirer au sort un nombre
 -- entre un maximum et un minimum, (les deux sont inclus).
-crush p:Paysan() Ble(10) (delay: 10) ->
-    draw (random p.skillAgricole 100)
+crush a:Agriculteur() Ble(10) (delay: 10) ->
+    draw (random a.skill_agriculture 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
 end
 
 -- Une technic doit toujours retourner un type. Dans le code
--- précédent, si p.skillAgricole est inférieur à 5 il est possible que
--- le tirage random renvoie une valeur inférieure à 5. Dans ce cas,
--- Kraft rencontrera une erreur d'exécution. Il faut donc soit
+-- précédent, si a.skill_agriculture est inférieur à 5 il est possible
+-- que le tirage random renvoie une valeur inférieure à 5. Dans ce
+-- cas, Kraft rencontrera une erreur d'exécution. Il faut donc soit
 -- spécifier un retour par défaut ...
 
-crush p:Paysan() Ble(10) (delay: 10) ->
-    draw (random p.skillAgricole 100)
+crush a:Agriculteur() Ble(10) (delay: 10) ->
+    draw (random a.skill_agriculture 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
         >> Void(0)
@@ -147,8 +147,8 @@ end
 
 -- ... ou s'assurer qu'un palier sera toujours sélectionné:
 
-crush p:Paysan() Ble(10) (delay: 10) ->
-    draw (random (max 5 p.skillAgricole) 100)
+crush a:Agriculteur() Ble(10) (delay: 10) ->
+    draw (random (max 5 a.skill_agriculture) 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
         >> Void(0)
@@ -157,9 +157,9 @@ end
 -- Il est possible d'utiliser des expressions pour les paliers ainsi
 -- que d'imbriquer les draw-expressions
 
-crush p:Paysan() Ble(10) (delay: 10) ->
-    draw (random p.skillAgricole 100)
-        >> p.skillAgricole * 2 -> Farine(10)
+crush a:Agriculteur() Ble(10) (delay: 10) ->
+    draw (random a.skill_agriculture 100)
+        >> 90 -> Farine(10)
         >> 5 -> draw (random 1 2)
                     >> 1 -> Farine(9)
                     >> Farine(8)
@@ -177,8 +177,8 @@ recrutement Villageois() -> MaindOeuvre(1) end
 -- C'est une simple convention qui peut être détournée, on peut par
 -- exemple vouloir retourner vrai ou faux en fonction d'une variable
 
-revolution ps:Paysans() ->
-   draw ps.faim
+revolution as:Agriculteurs() ->
+   draw as.faim
     >> 10 -> True()
     >> False()
 end
