@@ -69,13 +69,13 @@ signatures_literal_case(Signatures,Arg) ->
 % compile_technics(TechnicDefsGs) -> {[],[]};
 compile_technics(TechnicDefsGs) ->
     Exports = [cerl:c_fname(Name,Arity) || {{Name,Arity},_} <- TechnicDefsGs],
-    kl:log("Exports ~p",[Exports]),
+    % kl:log("Exports ~p",[Exports]),
     Bodies = compile_technics_functions(TechnicDefsGs),
     {Exports,Bodies}.
 
 compile_technics_functions([]) -> [];
 compile_technics_functions([{{_Name,_Arity},_TDs}=TDGroup|TechnicDefs]) ->
-    kl:log("TDGroup ~n~p",[TDGroup]),
+    % kl:log("TDGroup ~n~p",[TDGroup]),
     Function = compile_function(TDGroup),
     [Function|compile_technics_functions(TechnicDefs)].
 
@@ -155,13 +155,12 @@ compile_expr({call,getprop,[{key,_,Key},Var]}) ->
     compile_expr({call,getprop,[Key,Var]});
 
 compile_expr({call,CallName,Args}) ->
-    kl:log("AAAARGHS ~p",[Args]),
+    % kl:log("AAAARGHS ~p",[Args]),
     LitArgs = lists:map(fun compile_expr/1, Args),
     ccall(kl_lib,CallName,LitArgs);
 
 compile_expr({draw,ToMAtch,Clauses}) ->
-    MatchVar = make_var(cat_atoms('Match',kl:uuid())),
-    CaseClauses = [draw_clause(C,MatchVar) || C <- Clauses] ++ [draw_clause_error_clause()],
+    CaseClauses = [draw_clause(C) || C <- Clauses] ++ [draw_clause_error_clause()],
     cerl:c_case(compile_expr(ToMAtch), CaseClauses);
 
 compile_expr(Atom) when is_atom(Atom) -> cerl:c_atom(Atom);
@@ -180,9 +179,11 @@ compile_propdef({{name,_,Name},Expr}) ->
 
 %% ------ Draws ----------------------------------------------
 
-draw_clause({'_',Result},MatchVar) ->
+draw_clause({'_',Result}) ->
+    MatchVar = make_var(cat_atoms('_otherwise',kl:uuid())),
     cerl:c_clause([MatchVar], compile_expr(Result));
-draw_clause({ToBeat,Result},MatchVar) ->
+draw_clause({ToBeat,Result}) ->
+    MatchVar = make_var(cat_atoms('Term_',kl:uuid())),
     LitToBeat = compile_expr(ToBeat),
     ComparisonGuard = ccall(erlang,'>',[MatchVar,LitToBeat]),
     cerl:c_clause([MatchVar],ComparisonGuard,compile_expr(Result)).
@@ -201,10 +202,7 @@ type_expr_to_typevar({_,{typename,_,TypeName},     {name,_,Varname},_Qtty}) ->
     cerl:c_tuple([cerl:c_atom(TypeName),TypeVar]).
 
 cat_atoms(A,B) ->
-    list_to_atom(kl:to_list(A)++kl:to_list(B));
-
-cat_atoms(A,B) when is_list(A),is_list(B) ->
-    list_to_atom(A++B).
+    list_to_atom(kl:to_list(A)++kl:to_list(B)).
 
 
 make_var(Atom) -> cerl:c_var(cat_atoms('Var_',Atom)).

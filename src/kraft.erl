@@ -35,7 +35,8 @@ leexyecc() ->
     case BuildAllResult
         of ok ->
             log("Test Build : Build Passed"),
-            spawn( fun() -> kl:log("kl:t() ~p",[catch kl:t()]) end)
+            % spawn( fun() -> kl:log("kl:t() ~p",[catch kl:t()]) end),
+            ok
          ; {error,Reason} ->
             case catch log("Test Build : Error, ~s",[Reason])
                 of ok -> ok

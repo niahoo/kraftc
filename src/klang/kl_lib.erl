@@ -13,7 +13,7 @@ min(A,B) -> erlang:min(A,B).
 
 getprop(Key,KlObj) ->
     Val = kdict:fetch(Key,KlObj),
-    kl:log("Yielding ~p = ~p from ~p",[Key,Val,KlObj]),
+    % kl:log("Yielding ~p = ~p from ~p",[Key,Val,KlObj]),
     Val.
 
 random(From,To) when To < From -> random(To,From); %% Si les bornes sont en ordre inverse, on réinverse

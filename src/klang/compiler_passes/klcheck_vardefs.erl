@@ -11,7 +11,7 @@ check(#kraftmod{parsetree=ParseTree}) ->
 
 check_undefined_vars([]) -> ok;
 check_undefined_vars([TechnicDef|ParseTree]) ->
-    kl:log("Checking vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
+    % kl:log("Checking vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
     case check_undefined_vars2(TechnicDef)
         of ok -> check_undefined_vars(ParseTree)
          ; Any -> Any
@@ -43,10 +43,10 @@ get_meta_vars([], Acc) -> {ok, lists:reverse(Acc)};
 get_meta_vars([Metadef|Ms], Acc) ->
     {{name,_,Name}, Expr} = Metadef,
     VarsUsed = get_all_vars(Expr),
-    case VarsUsed
-        of [] -> kl:log("No vars used in metadefs")
-         ; _ -> kl:log("Checking vars used in metadefs")
-    end,
+    % case VarsUsed
+        % of [] -> kl:log("No vars used in metadefs")
+         % ; _ -> kl:log("Checking vars used in metadefs")
+    % end,
     case ensure_all_member(VarsUsed,Acc)
         of {error,Reason} -> {error,Reason}
          ; ok -> get_meta_vars(Ms,[Name|Acc])
@@ -54,10 +54,10 @@ get_meta_vars([Metadef|Ms], Acc) ->
 
 check_body(Body,Vars) ->
     VarsUsed = get_all_vars(Body),
-    case VarsUsed
-        of [] -> kl:log("No vars used in body")
-         ; _ -> kl:log("Checking vars used in body")
-    end,
+    % case VarsUsed
+        % of [] -> kl:log("No vars used in body")
+         % ; _ -> kl:log("Checking vars used in body")
+    % end,
     ensure_all_member(VarsUsed,Vars).
 
 %% -----------------------------------------------------------------
@@ -80,14 +80,13 @@ ensure_all_member(Elems,Pool) ->
                 fun (_Elem, {error,Reason}=Lift) ->
                         Lift
                   ; ({var,Line,Name},  ok) when is_atom(Name), is_integer(Line)->
-                        kl:log("Check if ~p is defined ... ",[Name],nnl),
-                        receive after 100 -> ok end,
+                        % kl:log("Check if ~p is defined ... ",[Name],nnl),
                         case lists:member(Name,Pool)
                             of true ->
-                                kl:log("yes"),
+                                % kl:log("yes"),
                                 ok
                              ; false ->
-                                kl:log("no"),
+                                % kl:log("no"),
                                 {error, io_lib:format("Undefined var ~p on line ~p",[Name,Line])}
                         end
                 end,

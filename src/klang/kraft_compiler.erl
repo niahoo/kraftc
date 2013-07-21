@@ -11,7 +11,8 @@ compile(KraftMod) ->
       , KraftModSigns <- kl_kraftmod:build_signatures(KraftMod)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
       % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
-      , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
+      % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
+      , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
       , Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
       , return(kl:log("Lint ~p",[Linted]))
       , KraftModBeam <- build_beam(KraftWithCore)
@@ -31,10 +32,7 @@ build_beam(#kraftmod{forms=Forms, filename=Filename}=KraftMod) ->
     {ok,_ModuleName,Beam,Warnings} = compile:forms( Forms
                                , [binary, from_core, return_errors, return_warnings, {source, Filename}]
                                ),
-    if length(Warnings) > 0 ->
-        [kl:log("Warning: ~p",[W]) || W <- Warnings]
-     ; true -> ok
-    end,
+    [format_compiler_warnings(W) || W <- Warnings],
     {ok,KraftMod#kraftmod{beam=Beam}}.
 
 load_klmodule(#kraftmod{name=Name,beam=Beam,filename=Filename}=_KraftMod) ->
@@ -45,4 +43,20 @@ load_klmodule(#kraftmod{name=Name,beam=Beam,filename=Filename}=_KraftMod) ->
 %% helper pour les monades -> force un 3 tuple en 2 tuple
 lift({A, B}) -> {A,B};
 lift({ErrorOK, A, B}) when ErrorOK =:= error ; ErrorOK =:= ok ->
-  {ErrorOK, {A,B}}.
+    {ErrorOK, {A,B}}.
+
+format_compiler_warnings({Filename,Ws}) ->
+    Format =
+        fun(Err) ->
+            {Line, Mod, Desc} = case Err
+                of {ErrorLine, Module, ErrorDescriptor} -> {ErrorLine, Module, ErrorDescriptor}
+                 ; {Module, ErrorDescriptor} -> {noline, Module, ErrorDescriptor}
+            end,
+            Description = Mod:format_error(Desc),
+            kl:log("Warning on line ~p in file ~p, " ++ Description,[Filename,Line])
+        end,
+    [try
+        Format(W)
+    catch
+        lol:_ -> kl:log("Warning : ~p",[W])
+    end || W <- Ws].
