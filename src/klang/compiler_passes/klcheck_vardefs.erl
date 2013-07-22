@@ -5,15 +5,16 @@
 -include_lib("kraft/include/kraft_lang.hrl").
 
 check(#kraftmod{parsetree=ParseTree}) ->
-    check_undefined_vars(ParseTree).
+    {ok,Technicdefs} = kl_parsetree:technicdefs(ParseTree),
+    check_undefined_vars(Technicdefs).
 
 %% Check undef vars -------------------------------------------------
 
 check_undefined_vars([]) -> ok;
-check_undefined_vars([TechnicDef|ParseTree]) ->
+check_undefined_vars([TechnicDef|Technicdefs]) ->
     % kl:log("Checking vardefs in kt@~p",[kl_technicdef:name(TechnicDef)]),
     case check_undefined_vars2(TechnicDef)
-        of ok -> check_undefined_vars(ParseTree)
+        of ok -> check_undefined_vars(Technicdefs)
          ; Any -> Any
     end.
 
@@ -77,7 +78,7 @@ ensure_all_member(Elems,Pool) ->
     %% reste des éléments n'est pas évalué, l'erreur traverse le reste
     %% du Pool
     MicroMonad =
-                fun (_Elem, {error,Reason}=Lift) ->
+                fun (_Elem, {error,_Reason}=Lift) ->
                         Lift
                   ; ({var,Line,Name},  ok) when is_atom(Name), is_integer(Line)->
                         % kl:log("Check if ~p is defined ... ",[Name],nnl),

@@ -8,7 +8,7 @@
 build_forms(#kraftmod{signatures=undefined}) ->
     { error,
       io_lib:format("Signatures are required to build forms",[]) };
-build_forms(#kraftmod{signatures=Signatures,parsetree=ParseTree}=KraftMod) ->
+build_forms(#kraftmod{signatures=Signatures,parsetree=ParseTree,filename=Filename}=KraftMod) ->
     LitModuleName = cerl:c_atom(KraftMod#kraftmod.name),
     ModuleInfoFuns = get_module_info(LitModuleName),
     TechnicInfos = get_technic_infos(Signatures),
@@ -28,7 +28,8 @@ build_forms(#kraftmod{signatures=Signatures,parsetree=ParseTree}=KraftMod) ->
                             ])
 
                           ),
-    {ok,KraftMod#kraftmod{forms=Module}}.
+    Annot = cerl:add_ann([{file,filename:basename(Filename)}],Module),
+    {ok,KraftMod#kraftmod{forms=Annot}}.
 
 get_module_info(LitName) ->
     Key = cerl:c_var('Key'),
@@ -95,14 +96,14 @@ compile_function({{Name,Arity},TDs}) ->
     %% Définition d'une structure 'case' à laquelle on ajoutera les
     %% clauses de chaque body. En fait, c'est la liste des variables
     %% elle-même
-    FunctionClauses = [compile_functionclause(Arity,TD) || TD <- TDs] ++ [function_clause_error_clause()],
+    FunctionClauses = [compile_functionclause(TD) || TD <- TDs] ++ [function_clause_error_clause()],
     Function = cerl:c_case(cerl:make_list(HeadVars), FunctionClauses),
     { cerl:c_fname(Name,Arity)
     , cerl:c_fun(HeadVars, Function)
     }.
 
 
-compile_functionclause(Arity,TD) ->
+compile_functionclause(TD) ->
     Vars = [type_expr_to_typevar(TE) || TE <- kl_technicdef:type_exprs(TD)],
     %% ON match une liste d'arguments donc il faut une liste
     Pattern = cerl:make_list(Vars),
@@ -161,6 +162,7 @@ compile_expr({call,CallName,Args}) ->
 
 compile_expr({draw,ToMAtch,Clauses}) ->
     CaseClauses = [draw_clause(C) || C <- Clauses] ++ [draw_clause_error_clause()],
+    % kl:term_to_paper(CaseClauses),
     cerl:c_case(compile_expr(ToMAtch), CaseClauses);
 
 compile_expr(Atom) when is_atom(Atom) -> cerl:c_atom(Atom);
@@ -179,7 +181,7 @@ compile_propdef({{name,_,Name},Expr}) ->
 
 %% ------ Draws ----------------------------------------------
 
-draw_clause({'_',Result}) ->
+draw_clause({{otherwise,_},Result}) ->
     MatchVar = make_var(cat_atoms('_otherwise',kl:uuid())),
     cerl:c_clause([MatchVar], compile_expr(Result));
 draw_clause({ToBeat,Result}) ->
@@ -254,7 +256,6 @@ deep_literal(Int) when is_integer(Int) ->
 loglit(_X,_Y) ->
     % kl:log(_X,_Y),
     ok.
-
 
 cnumber({number,_Line,Number}) when is_integer(Number)
  -> cerl:c_int(Number);

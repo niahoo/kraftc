@@ -1,11 +1,19 @@
 -module(kl_parsetree).
 
 -export([technicdefs/1]).
+-export([set_technicdefs/2]).
 -export([group_technicdefs/1]).
 
 technicdefs(ParseTree) ->
-    %% Pour le moment le parsetree n'est composé que d'une liste de technicdefs
+    %% Pour le moment le parsetree n'est composé que d'une liste de
+    %% technicdefs
     {ok, ParseTree}.
+
+set_technicdefs(_ParseTree,Technicdefs) ->
+    %% Pour le moment le parsetree n'est composé que d'une liste de
+    %% technicdefs
+    {ok,Technicdefs}.
+
 
 %% Renvoie [{Name,Arity,[technicdefs]}]
 group_technicdefs(ParseTree) ->

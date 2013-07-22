@@ -16,7 +16,7 @@ getprop(Key,KlObj) ->
     % kl:log("Yielding ~p = ~p from ~p",[Key,Val,KlObj]),
     Val.
 
-random(From,To) when To < From -> random(To,From); %% Si les bornes sont en ordre inverse, on réinverse
+random(To,From) when To > From -> random(From,To); %% Si les bornes sont en ordre inverse, on réinverse
 random(From,To) ->
     %% random server uniform renvoie un nombre entre 1 et X inclus.
     %% Pour trouver un nombre entre X et Y il faut donc trouver l'écart (+1), soit (Z = Y - X + 1),

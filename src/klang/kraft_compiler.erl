@@ -8,11 +8,13 @@ compile(KraftMod) ->
 
     CompileResult = do([error_m ||
         klcheck_vardefs:check(KraftMod)
-      , KraftModSigns <- kl_kraftmod:build_signatures(KraftMod)
+      , KraftModAllMatch <- klcheck_nomatchs:check(KraftMod)
+      , KraftModSigns <- kl_kraftmod:build_signatures(KraftModAllMatch)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
       % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
       % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
-      , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
+      % , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
+      % , return(kl:term_to_paper(KraftWithCore#kraftmod.forms))
       , Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
       , return(kl:log("Lint ~p",[Linted]))
       , KraftModBeam <- build_beam(KraftWithCore)
@@ -28,9 +30,9 @@ compile(KraftMod) ->
 
 build_beam(#kraftmod{filename=undefined}) ->
   {error, "Compiling a kraft module requires a filename"};
-build_beam(#kraftmod{forms=Forms, filename=Filename}=KraftMod) ->
+build_beam(#kraftmod{forms=Forms}=KraftMod) ->
     {ok,_ModuleName,Beam,Warnings} = compile:forms( Forms
-                               , [binary, from_core, return_errors, return_warnings, {source, Filename}]
+                               , [binary, from_core, return_errors, return_warnings]
                                ),
     [format_compiler_warnings(W) || W <- Warnings],
     {ok,KraftMod#kraftmod{beam=Beam}}.
@@ -50,13 +52,13 @@ format_compiler_warnings({Filename,Ws}) ->
         fun(Err) ->
             {Line, Mod, Desc} = case Err
                 of {ErrorLine, Module, ErrorDescriptor} -> {ErrorLine, Module, ErrorDescriptor}
-                 ; {Module, ErrorDescriptor} -> {noline, Module, ErrorDescriptor}
+                 ; {Module, ErrorDescriptor} -> {none, Module, ErrorDescriptor}
             end,
             Description = Mod:format_error(Desc),
-            kl:log("Warning on line ~p in file ~p, " ++ Description,[Filename,Line])
+            kl:log("Warning on line ~p in file ~p, " ++ Description,[Line,Filename])
         end,
     [try
         Format(W)
     catch
-        lol:_ -> kl:log("Warning : ~p",[W])
+        _:_ -> kl:log("Warning : ~p",[W])
     end || W <- Ws].

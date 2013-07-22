@@ -4,7 +4,7 @@ technicbody typeresults proplist propdef expressionlist expression
 arithmetic funcall variable oper.
 
 Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename
-name number '+' '-' '*' '/'.
+name number '+' '-' '*' '/' 'otherwise'.
 
 Rootsymbol technicdeflist.
 
@@ -74,13 +74,13 @@ trexpr -> typeresults : {return, '$1'}.
 trexpr -> drawexpr : '$1'.
 
 %% Draw : match supérieur à des paliers
-drawexpr -> 'draw' expression drawlist: {'draw','$2','$3'}.
+drawexpr -> 'draw' expression drawlist 'end': {'draw','$2','$3'}.
 
 drawlist -> drawitem drawlist : ['$1'|'$2'].
 drawlist -> drawitem : ['$1'].
 
-drawitem -> '>>' number '->' trexpr : {'$2', '$4'}.
-drawitem -> '>>' trexpr : {'_','$2'}.
+drawitem -> '>>' number '->' trexpr : {'$2','$4'}.
+drawitem -> '>>' 'otherwise' '->' trexpr : {'$2','$4'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
 funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
@@ -109,3 +109,4 @@ unwrap_OFF(X) -> X.
 
 %% Remplace l'atom en tête de tuple
 chgatom({_,L,V}, Atom) -> {Atom,L,V}.
+

@@ -44,7 +44,7 @@ crush Ble(1) (delay: 1) -> Farine(1) end
 -- tiret de soulignement) à des expression via l'opérateur '=',
 -- séparées par une virgule.
 
-crush Ble(10) (delay: 1)  -> Farine(1) {
+crush Ble(10) (delay: 1) -> Farine(1) {
     nutrition = 10, conservation = 5
     , quality = 5 , _prop = 3
 } end

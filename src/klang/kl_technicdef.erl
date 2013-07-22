@@ -4,6 +4,7 @@
 -module(kl_technicdef).
 
 -export([type_exprs/1,meta_vars/1,body/1,name/1,arity/1]).
+-export([set_body/2]).
 -export([composants/1,returntypes/1]).
 
 -include_lib("kraft/include/kraft_lang.hrl").
@@ -15,6 +16,8 @@ type_exprs({technicdef,_,TypeExprs,_,_}) -> TypeExprs.
 meta_vars({technicdef,_,_,Metas,_}) -> Metas.
 body({technicdef,_,_,_,Body}) -> Body.
 name({technicdef,{_,_,Name},_,_,_}) -> Name.
+
+set_body({technicdef,X,Y,Z,_OldBody},Body) -> {technicdef,X,Y,Z,Body}.
 
 arity(TD) ->
     length(type_exprs(TD)).

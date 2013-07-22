@@ -85,7 +85,7 @@ fun_print_yecc_error(Type) ->
     fun ({Filename, ErrorInfos}) ->
         F = fun io_lib:format/2,
         FL = fun({ErrorLine, _Module, Reason}) ->
-            [ F("line ~p : ",[ErrorLine])
+            [ F("~n --- line ~p : ",[ErrorLine])
             , yecc:format_error(Reason) ]
         end,
         Msg = [F("~p occured in file ~p~n",[Type, Filename])]

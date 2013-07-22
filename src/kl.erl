@@ -5,6 +5,7 @@
 -export([start_uuid/0,uuid/0]).
 -export([unok/1]).
 -export([string_to_paper/1]).
+-export([term_to_paper/1]).
 -export([priv_file/1,priv_file/2,klib_dir/1]).
 
 
@@ -28,10 +29,11 @@ t() ->
     %  km@test_check:crush({'Agriculteur',Agriculteur},{'Ble',Ble}).
     % VieuxPain = kdict:from_list([{quality,3}]),
     % km@test_check:pain({'VieuxPain',VieuxPain}).
-    Agriculteurs = kdict:from_list([
-        {faim,100}
-    ]),
-     km@test_check:revolution({'Agriculteurs',Agriculteurs}).
+    % Agriculteurs = kdict:from_list([
+        % {faim,100}
+    % ]),
+     % km@test_check:revolution({'Agriculteurs',Agriculteurs}).
+     kl:log("kl:t ~p",[km@test_check:crush({'Agriculteur',kdict:new()},{'Ble',kdict:new()})]).
 
 %% nnl signifie "no newline"
 log(X) -> log(X,[]).
@@ -46,7 +48,7 @@ find3tuples(Tag,X) ->
     % log("looking for {~p,_,_} ",[Tag]),
     All = f3t(Tag,X),
     % log("3tups : ~p",[All]),
-    lists:filter( fun ({Tag1,_,_}=Tuple) when Tag1 =:= Tag -> true
+    lists:filter( fun ({Tag1,_,_}) when Tag1 =:= Tag -> true
                     ; (_) -> false
                   end,
                   lists:flatten(All)).
@@ -66,7 +68,7 @@ find2tuples(Tag,X) ->
     % log("looking for {~p,_,_} ",[Tag]),
     All = f2t(Tag,X),
     % log("2tups : ~p",[All]),
-    lists:filter( fun ({Tag1,_}=Tuple) when Tag1 =:= Tag -> true
+    lists:filter( fun ({Tag1,_}) when Tag1 =:= Tag -> true
                     ; (_) -> false
                   end,
                   lists:flatten(All)).
@@ -112,6 +114,9 @@ unok({ok,V}) -> V.
 string_to_paper(IOList) ->
     Path = priv_file("paper"),
     file:write_file(Path,iolist_to_binary(IOList)).
+term_to_paper(Term) ->
+    Path = priv_file("paper"),
+    file:write_file(Path,io_lib:format("~p",[Term])).
 
 priv_file(File) -> priv_file(kraft,File).
 priv_file(App, File) when is_atom(App), is_list(File) ->
