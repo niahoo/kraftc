@@ -10,7 +10,8 @@
 check(#kraftmod{parsetree=ParseTree}=KM) ->
     {ok,Technicdefs} = kl_parsetree:technicdefs(ParseTree),
     Opti = [optimize(T,KM) || T <- Technicdefs],
-    {ok,NewParseTree} = kl_parsetree:set_technicdefs(ParseTree,Technicdefs),
+    {ok,NewParseTree} = kl_parsetree:set_technicdefs(ParseTree,Opti),
+    kl:log("Nomatch parse tree ~p",[Opti]),
     {ok,KM#kraftmod{parsetree=NewParseTree}}.
 
 
@@ -41,6 +42,7 @@ clauses([{{otherwise,Line},CBody}=C,Other|Clauses],KM) ->
         "Warning in file ~p line ~p : Subsequent clauses will never match.",
         [filename:basename(KM#kraftmod.filename),Line]
     ),
+    kl:log("Skipping ~p ",[Other|Clauses]),
     [C];
 clauses([{{number,_,_}=ToBeat,CBody}=C|Clauses],KM) ->
     [{ToBeat,expr(CBody,KM)}|clauses(Clauses,KM)];

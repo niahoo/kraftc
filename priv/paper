@@ -1,1 +1,62 @@
-qzdqzd
+module 'km@test_check' ['module_info'/0,
+			'module_info'/1,
+			'technics_infos'/0,
+			'technic_infos'/1,
+			'crush'/2]
+    attributes []
+'module_info'/0 =
+    fun () ->
+	call 'erlang':'get_module_info'
+	    ('km@test_check')
+'module_info'/1 =
+    fun (Key) ->
+	call 'erlang':'get_module_info'
+	    ('km@test_check', Key)
+'technics_infos'/0 =
+    fun () ->
+	[{'crush',[{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine']|[['Farine']|[['Haha']|[['Haha']]]]]}]}]
+'technic_infos'/1 =
+    fun (Key) ->
+	case Key of
+	  <'crush'> when 'true' ->
+	      [{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine']|[['Farine']|[['Haha']|[['Haha']]]]]}]
+	  <_X_Any> when 'true' ->
+	      'undefined'
+	end
+'crush'/2 =
+    fun (_X_ktArg2,_X_ktArg1) ->
+	case [_X_ktArg2,_X_ktArg1] of
+	  <[{'Agriculteur',_X_Anon_2},{'Ble',_X_Anon_3}]> when 'true' ->
+	      case 3 of
+		<Var_Term_5>
+		    when call 'erlang':'>'
+			  (Var_Term_5,
+			   97) ->
+		    [{'Farine',10,[]}]
+		<Var_Term_6>
+		    when call 'erlang':'>'
+			  (Var_Term_6,
+			   10) ->
+		    case 3 of
+		      <Var_Term_8>
+			  when call 'erlang':'>'
+				(Var_Term_8,
+				 97) ->
+			  [{'Farine',10,[]}]
+		      <Var__otherwise9> when 'true' ->
+			  [{'Haha','service',[]}]
+		      <_X_otherwise7> when 'true' ->
+			  call 'erlang':'error'
+			      ('draw_clause')
+		    end
+		<Var__otherwise10> when 'true' ->
+		    [{'Haha','service',[]}]
+		<_X_otherwise4> when 'true' ->
+		    call 'erlang':'error'
+			('draw_clause')
+	      end
+	  <_X_otherwise1> when 'true' ->
+	      call 'erlang':'error'
+		  ('function_clause')
+	end
+end
