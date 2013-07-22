@@ -33,13 +33,15 @@ composants({technicdef,_,TypeExprs,_,_}) ->
 
 returntypes({technicdef,_,_,_,Body}) ->
     Returns = kl:find2tuples(return,Body),
-    lists:map(fun({return,TypeOutputs}) ->
+    %% lists:usort -> remove duplicates
+    TypesNames = lists:map(fun({return,TypeOutputs}) ->
                 % [{aaaaa,TypeName }|| TypeName <- TypeOutputs]
-
-                [TypeName|| {{typeoutput,{typename,_,TypeName},_,_},_Props} <- TypeOutputs]
+                %% On sort ici pour remove les duplicates de types identiques mais pas dans le même ordre
+                lists:sort([TypeName|| {{typeoutput,{typename,_,TypeName},_,_},_Props} <- TypeOutputs])
                 % [{aaaaa,TypeName }|| {typeoutput,{typename,_,TypeName},_,_} <- TypeOutputs]
               end,
-              Returns).
+              Returns),
+    lists:usort(TypesNames).
 
 
 % {typeoutput,

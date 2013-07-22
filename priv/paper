@@ -14,12 +14,12 @@ module 'km@test_check' ['module_info'/0,
 	    ('km@test_check', Key)
 'technics_infos'/0 =
     fun () ->
-	[{'crush',[{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine']|[['Farine']|[['Haha']|[['Haha']]]]]}]}]
+	[{'crush',[{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine'|['Suck']]|[['Haha']]]}]}]
 'technic_infos'/1 =
     fun (Key) ->
 	case Key of
 	  <'crush'> when 'true' ->
-	      [{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine']|[['Farine']|[['Haha']|[['Haha']]]]]}]
+	      [{[{'Agriculteur','service'}|[{'Ble',10}]],[['Farine'|['Suck']]|[['Haha']]]}]
 	  <_X_Any> when 'true' ->
 	      'undefined'
 	end
@@ -31,25 +31,20 @@ module 'km@test_check' ['module_info'/0,
 		<Var_Term_5>
 		    when call 'erlang':'>'
 			  (Var_Term_5,
-			   97) ->
-		    [{'Farine',10,[]}]
-		<Var_Term_6>
-		    when call 'erlang':'>'
-			  (Var_Term_6,
 			   10) ->
 		    case 3 of
-		      <Var_Term_8>
+		      <Var_Term_7>
 			  when call 'erlang':'>'
-				(Var_Term_8,
+				(Var_Term_7,
 				 97) ->
-			  [{'Farine',10,[]}]
-		      <Var__otherwise9> when 'true' ->
-			  [{'Haha','service',[]}]
-		      <_X_otherwise7> when 'true' ->
+			  [{'Farine',10,[]}|[{'Suck','service',[]}]]
+		      <Var__otherwise8> when 'true' ->
+			  [{'Suck','service',[]}|[{'Farine','service',[]}]]
+		      <_X_otherwise6> when 'true' ->
 			  call 'erlang':'error'
 			      ('draw_clause')
 		    end
-		<Var__otherwise10> when 'true' ->
+		<Var__otherwise9> when 'true' ->
 		    [{'Haha','service',[]}]
 		<_X_otherwise4> when 'true' ->
 		    call 'erlang':'error'

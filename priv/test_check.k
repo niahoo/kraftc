@@ -1,15 +1,13 @@
 
 crush Agriculteur() Ble(10) ->
     draw 3
-        >> 97 -> Farine(10)
         >> 10 ->
             draw 3
-                >> 97 -> Farine(10)
-                >> otherwise -> Haha()
+                >> 97 -> Farine(10) Suck()
+                >> otherwise -> Suck() Farine()
                 >> 1 -> Ooo()
             end
         >> otherwise -> Haha()
-        >> 1 -> Lolilo()
     end
 end
 

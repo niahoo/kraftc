@@ -11,7 +11,7 @@ check(#kraftmod{parsetree=ParseTree}=KM) ->
     {ok,Technicdefs} = kl_parsetree:technicdefs(ParseTree),
     Opti = [optimize(T,KM) || T <- Technicdefs],
     {ok,NewParseTree} = kl_parsetree:set_technicdefs(ParseTree,Opti),
-    kl:log("Nomatch parse tree ~p",[Opti]),
+    % kl:log("Nomatch parse tree ~p",[Opti]),
     {ok,KM#kraftmod{parsetree=NewParseTree}}.
 
 

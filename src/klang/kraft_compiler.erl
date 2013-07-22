@@ -11,6 +11,7 @@ compile(KraftMod) ->
       , KraftModAllMatch <- klcheck_nomatchs:check(KraftMod)
       , KraftModSigns <- kl_kraftmod:build_signatures(KraftModAllMatch)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
+      , return(kl:log("Signatures ~p",[KraftWithCore#kraftmod.signatures]))
       % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
       % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
       , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
