@@ -6,6 +6,7 @@
 -export([max/2,min/2]).
 -export([getprop/2]).
 -export([random/2]).
+-export([iodump/1,iodump/2,iodump/3,iodump/4,iodump/5,iodump/6]).
 % -export([sum/1,avg/1]).
 
 max(A,B) -> erlang:max(A,B).
@@ -24,6 +25,26 @@ random(From,To) ->
     Range = To - From + 1,
     Rnd = random_server:uniform(Range),
     Rnd + From - 1.
+
+%% La fonction iodump permet de débugger des valeurs et retourne la
+%% dernière valeur scalaire kraft-compatible
+iodump(A) -> iodump2([A]).
+iodump(A,B) -> iodump2([A,B]).
+iodump(A,B,C) -> iodump2([A,B,C]).
+iodump(A,B,C,D) -> iodump2([A,B,C,D]).
+iodump(A,B,C,D,E) -> iodump2([A,B,C,D,E]).
+iodump(A,B,C,D,E,F) -> iodump2([A,B,C,D,E,F]).
+
+
+
+iodump2(List) ->
+    Print = lists:flatten(["Kraft var dump :", [" ~p" || _ <- List],"~n"]),
+    spawn(fun() -> error_logger:info_msg(Print,List) end),
+    lists:last(List).
+
+
+
+
 
 
 

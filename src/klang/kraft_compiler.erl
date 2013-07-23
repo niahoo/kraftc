@@ -14,7 +14,7 @@ compile(KraftMod) ->
       , return(kl:log("Signatures ~p",[KraftWithCore#kraftmod.signatures]))
       % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
       % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
-      , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
+      % , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
       % , return(kl:term_to_paper(KraftWithCore#kraftmod.forms))
       , Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
       , return(kl:log("Lint ~p",[Linted]))

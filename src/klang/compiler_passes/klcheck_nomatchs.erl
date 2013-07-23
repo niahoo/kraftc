@@ -1,5 +1,7 @@
 %%% Vérifie qu'il n'y ait pas de clauses dans un draw qui soient après
-%%% une clause matchall
+%%% une clause matchall. Dans le cas ou il n'y a pas de clause
+%%% matchall, on ajoute également, les clauses renvoyant une erreur,
+%%% par exemple draw_clause
 -module(klcheck_nomatchs).
 
 -export([check/1]).
@@ -14,9 +16,6 @@ check(#kraftmod{parsetree=ParseTree}=KM) ->
     % kl:log("Nomatch parse tree ~p",[Opti]),
     {ok,KM#kraftmod{parsetree=NewParseTree}}.
 
-
-body(TD) -> kl_technicdef:body(TD).
-set_body(TD,Body) -> set_body(TD,Body).
 
 
 optimize(TD,KM) ->
@@ -46,5 +45,5 @@ clauses([{{'_',Line},CBody}=C,Other|Clauses],KM) ->
     [C];
 clauses([{{number,_,_}=ToBeat,CBody}=C|Clauses],KM) ->
     [{ToBeat,expr(CBody,KM)}|clauses(Clauses,KM)];
-clauses([],_) -> [].
+clauses([],_) -> [none_match_clause].
 

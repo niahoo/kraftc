@@ -4,7 +4,7 @@ technicbody typeresults proplist propdef expressionlist expression
 arithmetic funcall variable oper.
 
 Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename
-name number '+' '-' '*' '/' '_'.
+name number string '+' '-' '*' '/' '_'.
 
 Rootsymbol technicdeflist.
 
@@ -68,6 +68,7 @@ expression -> variable : '$1'.
 expression -> number : unwrap_OFF('$1').
 expression -> '(' expression ')' : '$2'.
 expression -> funcall : '$1'.
+expression -> string : '$1'.
 
 %% Expression devant resulter par un typeresults
 trexpr -> typeresults : {return, '$1'}.

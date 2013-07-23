@@ -22,9 +22,9 @@ build_forms(#kraftmod{signatures=Signatures,parsetree=ParseTree,filename=Filenam
                             , cerl:c_fname(technic_infos,1)
                             ] ++ TechnicsExports
                           , lists:append([
-                              ModuleInfoFuns
-                           ,  TechnicInfos
-                           ,  TechnicsBodies
+                                ModuleInfoFuns
+                              , TechnicInfos
+                              , TechnicsBodies
                             ])
 
                           ),
@@ -112,7 +112,7 @@ compile_functionclause(TD) ->
 
 compile_body(TD) ->
     TDBody = kl_technicdef:body(TD),
-    compile_expr(TDBody).
+    cexpr(TDBody).
 
 %%% ------------------------------------------------------------------
 %%% COMPILATION EXPRESSIONS
@@ -126,49 +126,50 @@ compile_body(TD) ->
 %% racine unique. par conséquent, compiler le body d'une technique
 %% consiste à en compiler l'expression racine.
 
-compile_expr({return,TypeOutputs}) ->
-    cerl:make_list(lists:map(fun compile_expr/1, TypeOutputs));
+cexpr({return,TypeOutputs}) ->
+    cerl:make_list(lists:map(fun cexpr/1, TypeOutputs));
 
-compile_expr({{typeoutput,{typename,_Line,TypeName},_Varname,QttyExpr},PropsExprs}) ->
+cexpr({{typeoutput,{typename,_Line,TypeName},_Varname,QttyExpr},PropsExprs}) ->
     LitTypeName = cerl:c_atom(TypeName),
-    Qtty = compile_expr(QttyExpr),
+    Qtty = cexpr(QttyExpr),
     Props = compile_propdefs(PropsExprs),
     cerl:c_tuple([LitTypeName,Qtty,Props]);
     % cerl:c_tuple([LitTypeName,Qtty]);
 
-compile_expr({var,_,Varname}) -> make_var(Varname);
-compile_expr({number,_,_}=NumExpr) -> cnumber(NumExpr);
+cexpr({var,_,Varname}) -> make_var(Varname);
+cexpr({number,_,_}=NumExpr) -> cnumber(NumExpr);
+cexpr({string,_,String}=NumExpr) -> cerl:abstract(String);
 
-compile_expr({'+',Operand1,Operand2}) -> ccall(erlang,'+',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({'*',Operand1,Operand2}) -> ccall(erlang,'*',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({'-',Operand1,Operand2}) -> ccall(erlang,'-',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({'/',Operand1,Operand2}) -> ccall(erlang,'/',[compile_expr(Operand1),compile_expr(Operand2)]);
+cexpr({'+',Operand1,Operand2}) -> ccall(erlang,'+',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({'*',Operand1,Operand2}) -> ccall(erlang,'*',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({'-',Operand1,Operand2}) -> ccall(erlang,'-',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({'/',Operand1,Operand2}) -> ccall(erlang,'/',[cexpr(Operand1),cexpr(Operand2)]);
 
-compile_expr({call,'+',[Operand1,Operand2]}) -> ccall(erlang,'+',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({call,'*',[Operand1,Operand2]}) -> ccall(erlang,'*',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({call,'-',[Operand1,Operand2]}) -> ccall(erlang,'-',[compile_expr(Operand1),compile_expr(Operand2)]);
-compile_expr({call,'/',[Operand1,Operand2]}) -> ccall(erlang,'/',[compile_expr(Operand1),compile_expr(Operand2)]);
+cexpr({call,'+',[Operand1,Operand2]}) -> ccall(erlang,'+',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({call,'*',[Operand1,Operand2]}) -> ccall(erlang,'*',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({call,'-',[Operand1,Operand2]}) -> ccall(erlang,'-',[cexpr(Operand1),cexpr(Operand2)]);
+cexpr({call,'/',[Operand1,Operand2]}) -> ccall(erlang,'/',[cexpr(Operand1),cexpr(Operand2)]);
 
-compile_expr({call,{name,_Line,CallName},Args}) ->
-    compile_expr({call,CallName,Args});
+cexpr({call,{name,_Line,CallName},Args}) ->
+    cexpr({call,CallName,Args});
 
-compile_expr({call,getprop,[{key,_,Key},Var]}) ->
-    compile_expr({call,getprop,[Key,Var]});
+cexpr({call,getprop,[{key,_,Key},Var]}) ->
+    cexpr({call,getprop,[Key,Var]});
 
-compile_expr({call,CallName,Args}) ->
+cexpr({call,CallName,Args}) ->
     % kl:log("AAAARGHS ~p",[Args]),
-    LitArgs = lists:map(fun compile_expr/1, Args),
+    LitArgs = lists:map(fun cexpr/1, Args),
     ccall(kl_lib,CallName,LitArgs);
 
-compile_expr({draw,ToMAtch,Clauses}) ->
-    CaseClauses = [draw_clause(C) || C <- Clauses] ++ [draw_clause_error_clause()],
+cexpr({draw,ToMAtch,Clauses}) ->
+    CaseClauses = [draw_clause(C) || C <- Clauses],
     % kl:term_to_paper(CaseClauses),
-    cerl:c_case(compile_expr(ToMAtch), CaseClauses);
+    cerl:c_case(cexpr(ToMAtch), CaseClauses);
 
-compile_expr(Atom) when is_atom(Atom) -> cerl:c_atom(Atom);
+cexpr(Atom) when is_atom(Atom) -> cerl:c_atom(Atom);
 
-compile_expr(Other) ->
-    kl:write_paper(Other),
+cexpr(Other) ->
+    kl:term_to_paper(Other),
     deep_literal(Other).
 
 %% ------ Propdefs ----------------------------------------------
@@ -177,19 +178,22 @@ compile_propdefs(PropsExprs) ->
     cerl:make_list(lists:map(fun compile_propdef/1, PropsExprs)).
 
 compile_propdef({{name,_,Name},Expr}) ->
-    cerl:c_tuple([cerl:c_atom(Name),compile_expr(Expr)]).
+    cerl:c_tuple([cerl:c_atom(Name),cexpr(Expr)]).
 
 %% ------ Draws ----------------------------------------------
 
+draw_clause(none_match_clause) ->
+    Any = cerl:c_var(cat_atoms('_nomatch',kl:uuid())),
+    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(draw_clause)]));
 draw_clause({{'_',_},Result}) ->
     MatchVar = make_var(cat_atoms('_otherwise',kl:uuid())),
-    cerl:c_clause([MatchVar], compile_expr(Result));
+    cerl:c_clause([MatchVar], cexpr(Result));
 draw_clause({ToBeat,Result}) ->
     MatchVar = make_var(cat_atoms('Term_',kl:uuid())),
-    LitToBeat = compile_expr(ToBeat),
+    LitToBeat = cexpr(ToBeat),
     ComparisonGuard = ccall(erlang,'>',[MatchVar,LitToBeat]),
-    cerl:c_clause([MatchVar],ComparisonGuard,compile_expr(Result)).
-    % cerl:c_clause([MatchVar],compile_expr(Result)).
+    cerl:c_clause([MatchVar],ComparisonGuard,cexpr(Result)).
+    % cerl:c_clause([MatchVar],cexpr(Result)).
 
 
 %%% ------------------------------------------------------------------
@@ -217,12 +221,9 @@ make_var_list(Arity,Acc) when Arity > -1 ->
     Var = cerl:c_var(cat_atoms('_ktArg',Arity)),
     make_var_list(Arity-1,[Var|Acc]).
 
-draw_clause_error_clause() ->
-    Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
-    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(draw_clause)])).
-case_clause_error_clause() ->
-    Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
-    cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(case_clause)])).
+% case_clause_error_clause() ->
+    % Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
+    % cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(case_clause)])).
 function_clause_error_clause() ->
     Any = cerl:c_var(cat_atoms('_otherwise',kl:uuid())),
     cerl:c_clause([Any], ccall(erlang, error, [cerl:c_atom(function_clause)])).
