@@ -4,7 +4,7 @@ technicbody typeresults proplist propdef expressionlist expression
 arithmetic funcall variable oper.
 
 Terminals '.' '{' '}' '(' ')' ':' 'end' 'draw' '->' ',' '=' '>>' typename
-name number '+' '-' '*' '/' 'otherwise'.
+name number '+' '-' '*' '/' '_'.
 
 Rootsymbol technicdeflist.
 
@@ -80,7 +80,7 @@ drawlist -> drawitem drawlist : ['$1'|'$2'].
 drawlist -> drawitem : ['$1'].
 
 drawitem -> '>>' number '->' trexpr : {'$2','$4'}.
-drawitem -> '>>' 'otherwise' '->' trexpr : {'$2','$4'}.
+drawitem -> '>>' '_' '->' trexpr : {'$2','$4'}.
 
 funcall -> '(' name expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.
 funcall -> '(' oper expressionlist ')': {'call', unwrap_OFF('$2'), '$3'}.

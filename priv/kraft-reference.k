@@ -90,7 +90,9 @@ end
 -- comparer aux paliers puis, pour chaque palier, du symbole '>>', de
 -- la valeur du palier, d'une flèche et du type résultant. On peut
 -- également spécifier une clause sans palier qui sera automatiquement
--- sélectionnée si aucune clause précédente n'a été validée.
+-- sélectionnée si aucune clause précédente n'a été validée à l'aide
+-- du joker _ . Enfin, la clause 'draw' se termine par
+-- 'end'
 
 -- L'opérateur '>>' signifie que la valeur étudiée (ici b.quality)
 -- doit être strictement supérieur au palier pour que la clause soit
@@ -99,20 +101,21 @@ end
 
 crush b:Ble(1) (delay: 1) ->
     draw b.quality
-      -- Avec un blé de bonne qualité on obitient plus de farine
-      >> 10 -> Farine(9)
-      -- sinon on obtient x/10 Farine
-      >> 5 -> Farine(10)
-      -- en dessous on décide que le blé est trop mauvais, mais la
-      -- technic doit quand même retourner un type. On peut donc
-      -- renvoyer une quantité de 0: Farine(0). Mais du côté de
-      -- l'application il peut être intéressant de gérer les échecs de
-      -- toutes les technics de la même manière. On peut donc créer
-      -- un type spécifique pour ce cas.
-      >> Void(0)
-      -- cette dernière clause est ignorée car la précédente est
-      -- toujours valide
-      >> 3 -> Farine(1)
+        -- Avec un blé de bonne qualité on obitient plus de farine
+        >> 10 -> Farine(9)
+        -- sinon on obtient x/10 Farine
+        >> 5 -> Farine(10)
+        -- en dessous on décide que le blé est trop mauvais, mais la
+        -- technic doit quand même retourner un type. On peut donc
+        -- renvoyer une quantité de 0: Farine(0). Mais du côté de
+        -- l'application il peut être intéressant de gérer les échecs de
+        -- toutes les technics de la même manière. On peut donc créer
+        -- un type spécifique pour ce cas.
+        >> _ -> Void(0)
+        -- cette dernière clause est ignorée car la précédente est
+        -- toujours valide
+        >> 3 -> Farine(1)
+    end
 end
 
 
@@ -130,6 +133,7 @@ crush a:Agriculteur() Ble(10) (delay: 10) ->
     draw (random a.skill_agriculture 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
+    end
 end
 
 -- Une technic doit toujours retourner un type. Dans le code
@@ -142,28 +146,34 @@ crush a:Agriculteur() Ble(10) (delay: 10) ->
     draw (random a.skill_agriculture 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
-        >> Void(0)
+        >> _ -> Void(0)
+    end
 end
 
--- ... ou s'assurer qu'un palier sera toujours sélectionné:
+-- ... ou s'assurer qu'un palier sera toujours sélectionné, ici à
+-- l'aide de la fonction max qui renvoie 5 si a.skill_agriculture est
+-- inférieur à 5
 
 crush a:Agriculteur() Ble(10) (delay: 10) ->
     draw (random (max 5 a.skill_agriculture) 100)
         >> 97 -> Farine(10)
         >> 5 -> Farine(9)
-        >> Void(0)
+    end
 end
 
 -- Il est possible d'utiliser des expressions pour les paliers ainsi
--- que d'imbriquer les draw-expressions
+-- que d'imbriquer les draw-expressions grâce à la présence du mot-clé
+-- 'end'
 
 crush a:Agriculteur() Ble(10) (delay: 10) ->
     draw (random a.skill_agriculture 100)
         >> 90 -> Farine(10)
         >> 5 -> draw (random 1 2)
                     >> 1 -> Farine(9)
-                    >> Farine(8)
-        >> Void(0)
+                    >> _ -> Farine(8)
+                end
+        >> _ -> Void(0)
+    end
 end
 
 -- Les quantités des types sont optionnelles. Par convention, un type
@@ -178,7 +188,8 @@ recrutement Villageois() -> MaindOeuvre(1) end
 -- exemple vouloir retourner vrai ou faux en fonction d'une variable
 
 revolution as:Agriculteurs() ->
-   draw as.faim
-    >> 10 -> True()
-    >> False()
+    draw as.faim
+        >> 10 -> True()
+        >> _ -> False()
+    end
 end

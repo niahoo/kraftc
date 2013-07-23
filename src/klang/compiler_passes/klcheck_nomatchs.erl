@@ -32,10 +32,10 @@ expr({draw,_ToMatch,Clauses},KM) ->
 
 expr(X,KM) -> X.
 
-clauses([{{otherwise,_},CBody}=C|[]],KM) ->
+clauses([{{'_',_},CBody}=C|[]],KM) ->
     %% matchall mais pas de clause suivante, c'est cool
     [C];
-clauses([{{otherwise,Line},CBody}=C,Other|Clauses],KM) ->
+clauses([{{'_',Line},CBody}=C,Other|Clauses],KM) ->
     %% ici on a un matchall mais une clause ensuite. On écrit un
     %% warning et on ne retourne pas les clauses suivantes
     kl:log(

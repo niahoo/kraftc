@@ -181,7 +181,7 @@ compile_propdef({{name,_,Name},Expr}) ->
 
 %% ------ Draws ----------------------------------------------
 
-draw_clause({{otherwise,_},Result}) ->
+draw_clause({{'_',_},Result}) ->
     MatchVar = make_var(cat_atoms('_otherwise',kl:uuid())),
     cerl:c_clause([MatchVar], compile_expr(Result));
 draw_clause({ToBeat,Result}) ->

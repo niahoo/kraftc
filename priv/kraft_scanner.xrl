@@ -13,7 +13,7 @@ Rules.
 [-][>]     : {token,{list_to_atom(TokenChars),TokenLine}}.
 end        : {token,{list_to_atom(TokenChars),TokenLine}}.
 draw       : {token,{list_to_atom(TokenChars),TokenLine}}.
-otherwise  : {token,{list_to_atom(TokenChars),TokenLine}}.
+_          : {token,{list_to_atom(TokenChars),TokenLine}}.
 {INT}{FLO} : {token,{number,TokenLine,to_num(TokenChars)}}.
 {INT}{EXP} : {token,{number,TokenLine,to_num(tofloatexp(TokenChars))}}.
 {INT}{FLO}{EXP} : {token,{number,TokenLine,to_num(TokenChars)}}.
