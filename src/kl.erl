@@ -1,6 +1,6 @@
 -module(kl).
 -export([t/0]).
--export([log/1,log/2,log/3,to_list/1]).
+-export([log/1,log/2,log/3,logterm/2,to_list/1]).
 -export([find2tuples/2,find3tuples/2]).
 -export([start_uuid/0,uuid/0]).
 -export([unok/1]).
@@ -43,6 +43,8 @@ log(X,Y) ->
 log(X,Y,nnl) ->
     ?LOG(X,Y).
 
+logterm(Term,Label) ->
+    log(Label ++ ": ~p",[Term]).
 
 find3tuples(Tag,X) ->
     % log("looking for {~p,_,_} ",[Tag]),

@@ -31,6 +31,11 @@ typeresults -> typeoutput : [{'$1',[]}].
 
 technicbody -> trexpr : '$1'.
 
+%% Expression devant resulter par un typeresults
+trexpr -> typeresults : {return, '$1'}.
+trexpr -> drawexpr : '$1'.
+
+
 %% {abc: <expr>, cde:qdqzd}
 metalist -> metadef ',' metalist  :  ['$1'|'$3'].
 metalist -> metadef  :  ['$1'].
@@ -70,9 +75,6 @@ expression -> '(' expression ')' : '$2'.
 expression -> funcall : '$1'.
 expression -> string : '$1'.
 
-%% Expression devant resulter par un typeresults
-trexpr -> typeresults : {return, '$1'}.
-trexpr -> drawexpr : '$1'.
 
 %% Draw : match supérieur à des paliers
 drawexpr -> 'draw' expression drawlist 'end': {'draw','$2','$3'}.

@@ -35,12 +35,24 @@ iodump(A,B,C,D) -> iodump2([A,B,C,D]).
 iodump(A,B,C,D,E) -> iodump2([A,B,C,D,E]).
 iodump(A,B,C,D,E,F) -> iodump2([A,B,C,D,E,F]).
 
+iodump2(Args) ->
+    spawn(fun() -> print_varlist(Args) end),
+    lists:last(Args).
 
+print_varlist(Args) -> print_varlist(Args,[],Args).
 
-iodump2(List) ->
-    Print = lists:flatten(["Kraft var dump :", [" ~p" || _ <- List],"~n"]),
-    spawn(fun() -> error_logger:info_msg(Print,List) end),
-    lists:last(List).
+print_varlist([A|Args],PlaceHolders,AllArgs) ->
+    PH = if is_binary(A) -> "~s"
+          ; true -> "~p"
+         end,
+    print_varlist(Args,[PH|PlaceHolders],AllArgs);
+
+print_varlist([],ReversePlaceHolders,AllArgs) ->
+    PlaceHolders = string:join(lists:reverse(ReversePlaceHolders)," "),
+    Print = lists:flatten([PlaceHolders, "~n"]),
+    % error_logger:info_msg(Print,AllArgs).
+    io:format(Print,AllArgs).
+
 
 
 
