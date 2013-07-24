@@ -1,3 +1,4 @@
+#!/usr/bin/env escript
 main(_) ->
     io:format("Generating kraft lexer.~n"),
     XRL = priv("kl_scanner.xrl"),

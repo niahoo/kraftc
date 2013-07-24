@@ -10,7 +10,7 @@
 start() ->
     application:start(kraft),
     kl:start_uuid(),
-    leexyecc(),qzdqzd:qzdqz().
+    leexyecc().
 
 -include_lib("kraft/include/kraft_lang.hrl").
 

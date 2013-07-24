@@ -1,3 +1,4 @@
+#!/usr/bin/env escript
 main(_) ->
     io:format("Generating kraft parser.~n"),
     YRL = priv("kl_parser.yrl"),

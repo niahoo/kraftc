@@ -1,3 +1,3 @@
 -module(kraftc).
 
--export([compile/1]).
+% -export([compile/1]).
