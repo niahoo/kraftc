@@ -14,6 +14,9 @@ Rules.
 [-][>]     : {token,{list_to_atom(TokenChars),TokenLine}}.
 end        : {token,{list_to_atom(TokenChars),TokenLine}}.
 draw       : {token,{list_to_atom(TokenChars),TokenLine}}.
+%% if         : {token,{list_to_atom(TokenChars),TokenLine}}.
+%% then       : {token,{list_to_atom(TokenChars),TokenLine}}.
+%% else       : {token,{list_to_atom(TokenChars),TokenLine}}.
 _          : {token,{list_to_atom(TokenChars),TokenLine}}.
 {INT}{FLO} : {token,{number,TokenLine,to_num(TokenChars)}}.
 {INT}{EXP} : {token,{number,TokenLine,to_num(tofloatexp(TokenChars))}}.

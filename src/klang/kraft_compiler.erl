@@ -4,11 +4,18 @@
 -compile({parse_transform, cut}).
 -include_lib("kraft/include/kraft_lang.hrl").
 
-compile(KraftMod) ->
+compile(Filename) ->
 
     CompileResult = do([error_m ||
-        klcheck_vardefs:check(KraftMod)
+        RawCode <- file:read_file(Filename)
+      , Tokens <- scan_kfile(binary_to_list(RawCode))
+      % , {ok, log("Tokens:~n~w",[Tokens])}
+      , ParseTree <- kl_parser:parse(Tokens)
+      , KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, Filename)
+      % , {ok, log("KraftMod:~n~p",[KraftMod])},
+      , klcheck_vardefs:check(KraftMod)
       , KraftModAllMatch <- klcheck_nomatchs:check(KraftMod)
+      , klcheck_returns:check(KraftModAllMatch)
       , KraftModSigns <- kl_kraftmod:build_signatures(KraftModAllMatch)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
       , return(kl:log("Signatures ~p",[KraftWithCore#kraftmod.signatures]))
@@ -63,3 +70,12 @@ format_compiler_warnings({Filename,Ws}) ->
     catch
         _:_ -> kl:log("Warning : ~p",[W])
     end || W <- Ws].
+
+scan_kfile(BinString) ->
+    case kl_scanner:string(BinString)
+        of {ok,Tokens,_EndLine} ->
+            {ok,Tokens}
+         ; {error,{Line,kl_scanner,Error},_EndLine} ->
+            {error,kl_scanner:format_error(Error)
+            ++ io_lib:format(" on line ~p",[Line])}
+    end.

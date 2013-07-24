@@ -1,6 +1,6 @@
 crush a:Agriculteur() Ble() ->
-    draw 41
-        >> 10 -> True() { x = (iodump "lol")}
-        >> 3 -> False()
+    draw 5
+        >> 10 -> True() { x = (iodump "loli" "lol")}
+        >> 3 -> 6
     end
 end

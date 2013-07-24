@@ -1,0 +1,78 @@
+
+technicdeflist ::= technicdef ( technicdef )*
+
+technicdef ::= name typeinput* metalist? "->" technicbody "end"
+
+typeresults ::= typeoutput proplist typeresults
+    | typeoutput typeresults
+    | typeoutput proplist
+    | typeoutput
+
+technicbody ::= trexpr
+
+trexpr ::= typeresults
+    | drawexpr
+
+
+metalist ::= metadef "," metalist
+    | metadef
+    | "(" metalist ")"
+metadef ::= name ":" expression
+
+
+proplist ::= propdef "," proplist
+    | propdef
+    | "{" proplist "}"
+    | "{" "}"
+
+
+propdef ::= name "=" expression
+
+typeinput ::= typename "(" ")"
+    | name ":" typename "(" ")"
+    | typename "(" number ")"
+    | name ":" typename "(" number ")"
+
+
+typeoutput ::= typename "(" ")"
+    | name ":" typename "(" ")"
+    | typename "(" expression ")"
+    | name ":" typename "(" expression ")"
+
+
+expressionlist ::= expression expressionlist
+    | expression
+
+
+expression ::= arithmetic
+    | variable
+    | number
+    | "(" expression ")"
+    | funcall
+    | string
+
+
+
+drawexpr ::= "draw" expression drawlist "end"
+
+drawlist ::= drawitem drawlist
+    | drawitem
+
+drawitem ::= ">>" number "->" trexpr
+    | ">>" "_" "->" trexpr
+
+funcall ::= "(" name expressionlist ")"
+    | "(" oper expressionlist ")"
+    |  variable "." name
+
+variable ::= name
+
+oper ::= "+"
+    | "-"
+    | "*"
+    | "/"
+
+arithmetic ::= expression "+" expression
+    | expression "-" expression
+    | expression "/" expression
+    | expression "*" expression

@@ -4,6 +4,7 @@
 -export([find2tuples/2,find3tuples/2]).
 -export([start_uuid/0,uuid/0]).
 -export([unok/1]).
+-export([monadic/3]).
 -export([string_to_paper/1]).
 -export([term_to_paper/1]).
 -export([priv_file/1,priv_file/2,klib_dir/1]).
@@ -111,6 +112,15 @@ uuid() ->
 
 
 unok({ok,V}) -> V.
+
+%% sert à créer des fold monadiques sur des listes : La fonction de
+%% rappel doit un acc wrappé dans {ok, Acc} ou bien {error, Reason}.
+%% Si {error, Reason} est renvoyé alors les autres éléments ne sont
+%% plus parcourus et {error, Reason} est le résultat final.
+monadic(Fun,Acc0,List) -> monadic_2(Fun,{ok,Acc0},List).
+monadic_2(_Fun, Acc, []) -> Acc;
+monadic_2(Fun, {ok,Acc}, [H|T]) -> monadic_2(Fun,Fun(H,Acc),T);
+monadic_2(_Fun, {error,_Reason}=Lift, _) -> Lift.
 
 %% écrit un terme erlang vers le fichier priv/paper
 string_to_paper(IOList) ->

@@ -1,0 +1,33 @@
+main(_) ->
+    io:format("Generating kraft parser.~n"),
+    YRL = priv("kl_parser.yrl"),
+    ParserFile = filename:join([klib_dir(kraft), "src","klang","dynamic","kl_parser.erl"]),
+    io:format("Compiling parser file ~p",[YRL]),
+    {ok, ParserFile, Warnings} = yecc:file(YRL, [{parserfile, ParserFile},{return_warnings,true},{report_warnings,false}]),
+    lists:map(fun_print_yecc_error(warning), Warnings),
+    io:format("Parser Generated. ~n").
+
+fun_print_yecc_error(Type) ->
+    fun ({Filename, ErrorInfos}) ->
+        F = fun io_lib:format/2,
+        FL = fun({ErrorLine, _Module, Reason}) ->
+            [ F("line ~p : ",[ErrorLine])
+            , yecc:format_error(Reason) , "~n" ]
+        end,
+        Msg = [F("~n~p occured in file ~p~n",[Type, Filename])]
+        ++ lists:map(FL, ErrorInfos) ++ "~n",
+        io:format(Msg)
+    end.
+
+
+priv(X) ->
+    Dir = fun filename:dirname/1,
+    filename:join([Dir(Dir(escript:script_name())),"priv",X]).
+
+klib_dir(App) ->
+    case code:lib_dir(App)
+        of {error, bad_name} ->
+            Ebin = filename:dirname(code:which(App)),
+            filename:dirname(Ebin)
+        ; LibDir -> LibDir
+    end.

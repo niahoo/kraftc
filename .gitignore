@@ -1,5 +1,5 @@
 ebin/
 deps/
-src/klang/kraft_parser.erl
-src/klang/kraft_scanner.erl
+src/klang/kl_parser.erl
+src/klang/kl_scanner.erl
 erl_crash.dump
