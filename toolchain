@@ -25,7 +25,7 @@ gencompiler() ->
     rebar:main(["escriptize","skip_deps=true"]),
     Usage = case os:type()
         of  {unix,_} ->
-                "" = os:cmd("chmod u+x rebar"),
+                "" = os:cmd("chmod u+x kraftc"),
                 os:cmd("kraftc")
          ;  {win32,_} -> write_windows_cmd(),
                 os:cmd("kraftc.cmd")
@@ -34,7 +34,7 @@ gencompiler() ->
     end,
     io:format(
 "Compiler generated~n"
-"Done ! krafc compiler has been generated to the current directory~n"
+"Done ! kraftc compiler has been generated to the current directory~n"
 "Move it anywhere in your path to compile kraft technics files~n"
     ),
     kraftc:usage().
