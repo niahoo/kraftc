@@ -2,7 +2,7 @@
 main(_) ->
     io:format("Generating kraft parser.~n"),
     YRL = priv("kl_parser.yrl"),
-    ParserFile = filename:join([klib_dir(kraft), "src","klang","dynamic","kl_parser.erl"]),
+    ParserFile = filename:join([klib_dir(kraft), "src","dynamic","kl_parser.erl"]),
     io:format("Compiling parser file ~p",[YRL]),
     {ok, ParserFile, Warnings} = yecc:file(YRL, [{parserfile, ParserFile},{return_warnings,true},{report_warnings,false}]),
     lists:map(fun_print_yecc_error(warning), Warnings),

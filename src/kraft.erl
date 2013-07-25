@@ -41,7 +41,7 @@ leexyecc() ->
 recomp(Module) ->
     code:delete(Module),
     code:purge(Module),
-    Filename = filename:join([klib_dir(kraft), "src","klang",atom_to_list(Module)]),
+    Filename = filename:join([klib_dir(kraft), "src",atom_to_list(Module)]),
     Outdir = filename:join([klib_dir(kraft), "ebin"]),
     {ok, Module} = compile:file(Filename,[{outdir, Outdir}]),
     ok.

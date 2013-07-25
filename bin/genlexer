@@ -2,7 +2,7 @@
 main(_) ->
     io:format("Generating kraft lexer.~n"),
     XRL = priv("kl_scanner.xrl"),
-    ScannerFile = filename:join([klib_dir(kraft), "src","klang","dynamic","kl_scanner.erl"]),
+    ScannerFile = filename:join([klib_dir(kraft), "src","dynamic","kl_scanner.erl"]),
     io:format("Compiling lexer file ~p~n",[XRL]),
     {ok, ScannerFile} = leex:file(XRL, [{scannerfile, ScannerFile}]),
     io:format("Lexer Generated.~n").

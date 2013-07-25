@@ -1,4 +1,4 @@
-{application, kraft,
+{application, kraftc,
  [
   {description, ""},
   {vsn, "1"},

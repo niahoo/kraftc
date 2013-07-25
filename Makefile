@@ -1,25 +1,23 @@
 all: get-deps vm-args compile-all
-	chmod +x bin/*
-
-remake: clean-deps clean all
 
 compile:
-	- rm src/klang/dynamic/kl_scanner.erl
-	- rm src/klang/dynamic/kl_parser.erl
+	- rm src/dynamic/kl_scanner.erl
+	- rm src/dynamic/kl_parser.erl
 	@(rebar skip_deps=true compile)
 
 compile-all:
-	- rm src/klang/dynamic/kl_scanner.erl
-	- rm src/klang/dynamic/kl_parser.erl
+	- rm src/dynamic/kl_scanner.erl
+	- rm src/dynamic/kl_parser.erl
 	- rm ebin -r
 	escript bin/genlexer ; chmod +x bin/genlexer
 	escript bin/genparser ; chmod +x bin/genparser
+	chmod +x bin/*
 	@(rebar compile)
 
 
 win: get-deps vm-args
-	- rm src\klang\kl_scanner.erl
-	- rm src\klang\kl_parser.erl
+	- rm src\kl_scanner.erl
+	- rm src\kl_parser.erl
 	- rm ebin -r
 	@(rebar compile) 2>NUL
 
@@ -59,9 +57,7 @@ doc:
 	@(rebar skip_deps=false doc)
 
 vm-args:
-
 	cat priv/vm-args.src > priv/vm-args
-
 	for i in `find -name ebin -type d`; do \
 		echo '-pa' $$i >> priv/vm-args; \
 	done
