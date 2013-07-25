@@ -4,3 +4,4 @@ src/dynamic/kl_parser.erl
 src/dynamic/kl_scanner.erl
 erl_crash.dump
 kraftc
+kraftc.cmd
