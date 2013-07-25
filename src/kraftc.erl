@@ -16,8 +16,8 @@ main(Args) ->
             , Todo <- 'what_to_do?'(Opts ++ Dummies)
             , do_what_to_do(Todo)
             ])
-        of {ok, Result} -> io:format("Compilation success, ~p~n",[Result])
-         ; {error, Err} -> io:format("~s~n",[format_error(Err)])
+        of {ok, _Result} -> io:format("Compilation success~n",[])
+         ; {error, Err} -> io:format("~n error : ~s~n",[format_error(Err)])
     end.
 
 
@@ -28,7 +28,9 @@ help() -> usage().
 
 format_error({invalid_option,Opt}) -> io_lib:format("Invalid option ~p",[Opt]);
 format_error({txt,String}) -> String;
-format_error(X) -> io_lib:format("~p",X).
+format_error({Line,ChainTool,Error}) -> ChainTool:format_error(Error) ++ io_lib:format(" on line ~p",[Line]);
+format_error(enoent) -> "Invalid file or directory";
+format_error(X) -> io_lib:format("~s",[X]).
 
 'what_to_do?'(Opts) ->
     % kl:logterm(Opts,"Opts"),
@@ -48,6 +50,31 @@ format_error(X) -> io_lib:format("~p",X).
 
 
 
-do_what_to_do(Todo) ->
-    kl:logterm(Todo,"Todo !"),
-    {ok,lol}.
+do_what_to_do(#todo{outdir=undefined}=Todo) -> do_what_to_do(Todo#todo{outdir="."});
+do_what_to_do(#todo{kfiles=[]}=Todo) -> {error,{txt,"Please specify one kraft file at least."}};
+do_what_to_do(#todo{kfiles=Files,outdir=Outdir}=_Todo) ->
+    %% Début de la compilation
+    setenv(),
+    CollectCompiled =
+        fun (Filename,ModuleNames) ->
+            case compile(Filename,Outdir)
+                of {ok,ModName} -> {ok, [ModName|ModuleNames]}
+                 ; Any -> Any
+            end
+        end,
+    kl:monadic(CollectCompiled, [], Files).
+
+compile(Filename,Outdir) ->
+    Basename =  filename:basename(Filename,".k"),
+    BinaryName = Basename ++ ".kb",
+    do([error_m ||
+        io:format(" -- compile ~s ",[Basename ++ ".k"]),
+        Beam <- kraft_compiler:compile(Filename),
+        file:write_file(filename:join([Outdir,BinaryName]),Beam),
+        io:format("=> ~s~n",[BinaryName]),
+        {ok, list_to_atom("km@" ++ Basename)}
+    ]).
+
+setenv() ->
+    kl:start_uuid(),
+    ok.

@@ -10,7 +10,7 @@ from_parsetree(ParseTree, Filename) ->
 
 
 build_signatures(#kraftmod{parsetree=ParseTree}=KraftMod) ->
-    kl:log("Building signatures for module ~p",[KraftMod#kraftmod.name]),
+    % kl:log("Building signatures for module ~p",[KraftMod#kraftmod.name]),
     {ok, TechnicDefs} = kl_parsetree:technicdefs(ParseTree),
     ReadSignature =
         fun(TD,Dict) ->
