@@ -23,7 +23,7 @@ compile(Filename) ->
       % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
       % , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
       % , return(kl:term_to_paper(KraftWithCore#kraftmod.forms))
-      , Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
+      , _Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
       % , return(kl:log("Lint ~p",[Linted]))
       , KraftModBeam <- build_beam(KraftWithCore)
       , load_klmodule(KraftModBeam)

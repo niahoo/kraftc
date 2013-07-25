@@ -22,7 +22,31 @@ gencompiler() ->
     % true = code:add_path(filename:join(["deps","getopt","ebin"])),
     %% Run rebar compile to do proper .app validation etc.
     %% and rebar escriptize to create the rebar script
-    rebar:main(["escriptize","skip_deps=true"]).
+    rebar:main(["escriptize","skip_deps=true"]),
+    Usage = case os:type()
+        of  {unix,_} ->
+                "" = os:cmd("chmod u+x rebar"),
+                os:cmd("kraftc")
+         ;  {win32,_} -> write_windows_cmd(),
+                os:cmd("kraftc.cmd")
+         ;  _ ->
+                ok, ""
+    end,
+    io:format(
+"Compiler generated~n"
+"Done ! krafc compiler has been generated to the current directory~n"
+"Move it anywhere in your path to compile kraft technics files~n"
+    ),
+    kraftc:usage().
+
+write_windows_cmd() ->
+    CmdScript=
+        "@echo off\r\n"
+        "setlocal\r\n"
+        "set rebarscript=%~f0\r\n"
+        "escript.exe \"%rebarscript:.cmd=%\" %*\r\n",
+    ok = file:write_file("kraftc.cmd", CmdScript).
+
 
 genlexer() ->
     io:format("Generating kraftc lexer.~n"),
