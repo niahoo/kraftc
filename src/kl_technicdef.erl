@@ -7,7 +7,7 @@
 -export([set_body/2]).
 -export([composants/1,returntypes/1]).
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 
 % technicdef() -> {technicdef,name,typeexprs,metas,body}.
 

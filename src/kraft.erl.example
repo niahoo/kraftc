@@ -12,7 +12,7 @@ start() ->
     kl:start_uuid(),
     leexyecc().
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 
 t() -> ok.
 initstop() ->
@@ -41,8 +41,8 @@ leexyecc() ->
 recomp(Module) ->
     code:delete(Module),
     code:purge(Module),
-    Filename = filename:join([klib_dir(kraft), "src",atom_to_list(Module)]),
-    Outdir = filename:join([klib_dir(kraft), "ebin"]),
+    Filename = filename:join([klib_dir(kraftc), "src",atom_to_list(Module)]),
+    Outdir = filename:join([klib_dir(kraftc), "ebin"]),
     {ok, Module} = compile:file(Filename,[{outdir, Outdir}]),
     ok.
 

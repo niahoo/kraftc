@@ -2,7 +2,7 @@
 -export([check/1]).
 -compile({parse_transform, do}).
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 
 check(#kraftmod{parsetree=ParseTree}) ->
     {ok,Technicdefs} = kl_parsetree:technicdefs(ParseTree),

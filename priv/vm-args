@@ -14,6 +14,7 @@
 
 ## Path disponible
 -pa ./deps/erlando/ebin
+-pa ./deps/getopt/ebin
 -pa ./deps/pmod_transform/ebin
 -pa ./deps/rebar/ebin
 -pa ./ebin

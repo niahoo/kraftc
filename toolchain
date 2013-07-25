@@ -1,0 +1,67 @@
+#!/usr/bin/env escript
+%% -*- mode: erlang;erlang-indent-level: 4 -*-
+main([]) -> ok;
+main(["c"|Args]) ->
+    gencompiler(),
+    main(Args);
+main(["l"|Args]) ->
+    genlexer(),
+    main(Args);
+main(["p"|Args]) ->
+    genparser(),
+    main(Args);
+main([Unknown|Args]) ->
+    io:format("Unknown args ~s, skip~n",[Unknown]),
+    main(Args).
+
+
+gencompiler() ->
+    io:format("Generating kraftc compiler.~n"),
+    true = code:add_path("ebin"),
+    true = code:add_path(filename:join(["deps","rebar","ebin"])),
+    % true = code:add_path(filename:join(["deps","getopt","ebin"])),
+    %% Run rebar compile to do proper .app validation etc.
+    %% and rebar escriptize to create the rebar script
+    rebar:main(["escriptize","skip_deps=true"]).
+
+genlexer() ->
+    io:format("Generating kraftc lexer.~n"),
+    XRL = priv("kl_scanner.xrl"),
+    ScannerFile = filename:join([klib_dir(kraftc), "src","dynamic","kl_scanner.erl"]),
+    io:format("Compiling lexer file ~p~n",[XRL]),
+    {ok, ScannerFile} = leex:file(XRL, [{scannerfile, ScannerFile}]),
+    io:format("Lexer Generated.~n").
+
+genparser() ->
+    io:format("Generating kraft parser.~n"),
+    YRL = priv("kl_parser.yrl"),
+    ParserFile = filename:join([klib_dir(kraftc), "src","dynamic","kl_parser.erl"]),
+    io:format("Compiling parser file ~p",[YRL]),
+    {ok, ParserFile, Warnings} = yecc:file(YRL, [{parserfile, ParserFile},{return_warnings,true},{report_warnings,false}]),
+    lists:map(fun_print_yecc_error(warning), Warnings),
+    io:format("Parser Generated. ~n").
+
+fun_print_yecc_error(Type) ->
+    fun ({Filename, ErrorInfos}) ->
+        F = fun io_lib:format/2,
+        FL = fun({ErrorLine, _Module, Reason}) ->
+            [ F("line ~p : ",[ErrorLine])
+            , yecc:format_error(Reason) , "~n" ]
+        end,
+        Msg = [F("~n~p occured in file ~p~n",[Type, Filename])]
+        ++ lists:map(FL, ErrorInfos) ++ "~n",
+        io:format(Msg)
+    end.
+
+
+priv(X) ->
+    Dir = fun filename:dirname/1,
+    filename:join([Dir(Dir(escript:script_name())),"priv",X]).
+
+klib_dir(App) ->
+    case code:lib_dir(App)
+        of {error, bad_name} ->
+            Ebin = filename:dirname(code:which(App)),
+            filename:dirname(Ebin)
+        ; LibDir -> LibDir
+    end.

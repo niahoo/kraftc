@@ -1,6 +1,6 @@
 -module(kl_codegen).
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 -compile({parse_transform, cut}).
 
 -export([build_forms/1,deep_literal/1]).
@@ -138,7 +138,7 @@ cexpr({{typeoutput,{typename,_Line,TypeName},_Varname,QttyExpr},PropsExprs}) ->
 
 cexpr({var,_,Varname}) -> make_var(Varname);
 cexpr({number,_,_}=NumExpr) -> cnumber(NumExpr);
-cexpr({string,_,String}=NumExpr) -> cerl:abstract(String);
+cexpr({string,_,String}) -> cerl:abstract(String);
 
 cexpr({'+',Operand1,Operand2}) -> ccall(erlang,'+',[cexpr(Operand1),cexpr(Operand2)]);
 cexpr({'*',Operand1,Operand2}) -> ccall(erlang,'*',[cexpr(Operand1),cexpr(Operand2)]);

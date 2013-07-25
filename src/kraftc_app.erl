@@ -1,4 +1,4 @@
--module(kraft_app).
+-module(kraftc_app).
 
 -behaviour(application).
 
@@ -10,7 +10,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    kraft_sup:start_link().
+    kraftc_sup:start_link().
 
 stop(_State) ->
     ok.

@@ -1,5 +1,5 @@
 
--module(kraft_sup).
+-module(kraftc_sup).
 
 -behaviour(supervisor).
 

@@ -3,7 +3,7 @@
 -export([from_parsetree/2]).
 -export([build_signatures/1]).
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 from_parsetree(ParseTree, Filename) ->
     Name = module_name(Filename),
     {ok, #kraftmod{ parsetree=ParseTree ,filename=Filename, name=Name , step=1 }}.

@@ -7,7 +7,7 @@
 -export([check/1]).
 % -compile({parse_transform, do}).
 
--include_lib("kraft/include/kraft_lang.hrl").
+-include_lib("kraftc/include/kraft_lang.hrl").
 
 check(#kraftmod{parsetree=ParseTree}=KM) ->
     {ok,Technicdefs} = kl_parsetree:technicdefs(ParseTree),
@@ -29,12 +29,12 @@ optimize(TD,KM) ->
 expr({draw,_ToMatch,Clauses},KM) ->
     {draw,_ToMatch,clauses(Clauses,KM)};
 
-expr(X,KM) -> X.
+expr(X,_KM) -> X.
 
-clauses([{{'_',_},CBody}=C|[]],KM) ->
+clauses([{{'_',_},_}=C|[]],_KM) ->
     %% matchall mais pas de clause suivante, c'est cool
     [C];
-clauses([{{'_',Line},CBody}=C,Other|Clauses],KM) ->
+clauses([{{'_',Line},_}=C,Other|Clauses],KM) ->
     %% ici on a un matchall mais une clause ensuite. On écrit un
     %% warning et on ne retourne pas les clauses suivantes
     kl:log(
@@ -43,7 +43,7 @@ clauses([{{'_',Line},CBody}=C,Other|Clauses],KM) ->
     ),
     kl:log("Skipping ~p ",[Other|Clauses]),
     [C];
-clauses([{{number,_,_}=ToBeat,CBody}=C|Clauses],KM) ->
+clauses([{{number,_,_}=ToBeat,CBody}|Clauses],KM) ->
     [{ToBeat,expr(CBody,KM)}|clauses(Clauses,KM)];
 clauses([],_) -> [none_match_clause].
 

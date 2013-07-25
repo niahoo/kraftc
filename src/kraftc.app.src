@@ -7,6 +7,6 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { kraft_app, []}},
+  {mod, { kraftc_app, []}},
   {env, []}
  ]}.

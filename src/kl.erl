@@ -130,7 +130,7 @@ term_to_paper(Term) ->
     Path = priv_file("paper"),
     file:write_file(Path,io_lib:format("~p",[Term])).
 
-priv_file(File) -> priv_file(kraft,File).
+priv_file(File) -> priv_file(kraftc,File).
 priv_file(App, File) when is_atom(App), is_list(File) ->
     PrivDir = case code:priv_dir(App)
         of {error, bad_name} ->

@@ -9,10 +9,9 @@ compile-all:
 	- rm src/dynamic/kl_scanner.erl
 	- rm src/dynamic/kl_parser.erl
 	- rm ebin -r
-	escript bin/genlexer ; chmod +x bin/genlexer
-	escript bin/genparser ; chmod +x bin/genparser
-	chmod +x bin/*
+	escript toolchain l p
 	@(rebar compile)
+	escript toolchain c
 
 
 win: get-deps vm-args
