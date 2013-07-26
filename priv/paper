@@ -1,13 +1,1 @@
-{technicdef,{name,1,crush},
-            [{typeinput,{typename,1,'Agriculteur'},{name,1,a},service},
-             {typeinput,{typename,1,'Ble'},'ANON',service}],
-            [],
-            {draw,{number,2,5},
-                  [{{number,3,10},
-                    {return,[{{typeoutput,{typename,3,'True'},'ANON',service},
-                              [{{name,3,x},
-                                {call,{name,3,iodump},
-                                      [{string,3,<<"loli">>},
-                                       {string,3,<<"lol">>}]}}]}]}},
-                   {{number,4,3},{number,4,6}},
-                   none_match_clause]}}
+qzd

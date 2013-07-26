@@ -24,8 +24,6 @@ optimize(TD,KM) ->
     NewTD = kl_technicdef:set_body(TD,NewBody),
     NewTD.
 
-
-
 expr({draw,_ToMatch,Clauses},KM) ->
     {draw,_ToMatch,clauses(Clauses,KM)};
 

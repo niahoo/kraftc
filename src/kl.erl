@@ -119,26 +119,31 @@ unok({ok,V}) -> V.
 %% plus parcourus et {error, Reason} est le résultat final.
 monadic(Fun,Acc0,List) -> monadic_2(Fun,{ok,Acc0},List).
 monadic_2(_Fun, Acc, []) -> Acc;
+monadic_2(Fun, ok, [H|T]) -> monadic_2(Fun,Fun(H,ok),T);
 monadic_2(Fun, {ok,Acc}, [H|T]) -> monadic_2(Fun,Fun(H,Acc),T);
 monadic_2(_Fun, {error,_Reason}=Lift, _) -> Lift.
 
 %% écrit un terme erlang vers le fichier priv/paper
-string_to_paper(IOList) ->
-    Path = priv_file("paper"),
-    file:write_file(Path,iolist_to_binary(IOList)).
-term_to_paper(Term) ->
-    Path = priv_file("paper"),
-    file:write_file(Path,io_lib:format("~p",[Term])).
+string_to_paper(IOList) -> logterm(IOList,"~npaper").
+    % Path = priv_file("paper"),
+    % file:write_file(Path,iolist_to_binary(IOList)).
+term_to_paper(Term) -> logterm(Term,"~npaper").
+    % Path = priv_file("paper"),
+    % file:write_file(Path,io_lib:format("~p",[Term])).
 
 priv_file(File) -> priv_file(kraftc,File).
-priv_file(App, File) when is_atom(App), is_list(File) ->
-    PrivDir = case code:priv_dir(App)
-        of {error, bad_name} ->
-            Ebin = filename:dirname(code:which(App)),
-            filename:join(filename:dirname(Ebin), "priv")
-         ; Dir -> Dir
-    end,
-    filename:join(PrivDir, File).
+priv_file(App, File) when is_atom(App), is_list(File) -> error(escript_DEPRACATED).
+    % PrivDir = case code:priv_dir(App)
+        % of {error, bad_name} ->
+            % Ebin = filename:dirname(code:which(App)),
+            % logterm(Ebin,"Ebin"),
+            % logterm(filename:join(filename:dirname(Ebin), "priv"),"join"),
+            % PrivDir = filename:join(filename:dirname(Ebin), "priv"),
+         % ; Dir ->
+            % logterm(Dir,"Dir"),
+            % Dir
+    % end,
+    % filename:join(PrivDir, File).
 
 klib_dir(App) ->
     case code:lib_dir(App)

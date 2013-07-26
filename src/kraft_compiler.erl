@@ -14,8 +14,8 @@ compile(Filename) ->
       , KraftMod <-  kl_kraftmod:from_parsetree(ParseTree, Filename)
       % , {ok, log("KraftMod:~n~p",[KraftMod])},
       , klcheck_vardefs:check(KraftMod)
+      , klcheck_returns:check(KraftMod)
       , KraftModAllMatch <- klcheck_nomatchs:check(KraftMod)
-      , klcheck_returns:check(KraftModAllMatch)
       , KraftModSigns <- kl_kraftmod:build_signatures(KraftModAllMatch)
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
       % , return(kl:log("Signatures ~p",[KraftWithCore#kraftmod.signatures]))

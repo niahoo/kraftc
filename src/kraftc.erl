@@ -17,7 +17,7 @@ main(Args) ->
             , do_what_to_do(Todo)
             ])
         of {ok, _Result} -> io:format("Compilation success~n",[])
-         ; {error, Err} -> io:format("~n error : ~s~n",[format_error(Err)])
+         ; {error, Err} -> io:format(" error : ~s~n",[format_error(Err)])
     end.
 
 
