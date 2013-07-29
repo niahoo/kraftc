@@ -112,7 +112,23 @@ compile_functionclause(TD) ->
 
 compile_body(TD) ->
     TDBody = kl_technicdef:body(TD),
-    cexpr(TDBody).
+    TDMetas = kl_technicdef:meta_vars(TD),
+    Metas = compile_metadefs(TDMetas),
+    Body = cexpr(TDBody),
+    % kl:term_to_paper(Metas),
+    %% Fold Right
+    StackLetexprRight = fun ({Var,Value},ChildBody) -> cerl:c_let([Var],Value,ChildBody) end,
+    lists:foldr(StackLetexprRight, Body, Metas).
+
+
+%%% ------------------------------------------------------------------
+%%% COMPILATION METAS
+%%% ------------------------------------------------------------------
+
+compile_metadefs([{{name,_L,Name},Value}|Metadefs]) ->
+    [{make_var(Name),cexpr(Value)}|compile_metadefs(Metadefs)];
+compile_metadefs([]) ->
+    [].
 
 %%% ------------------------------------------------------------------
 %%% COMPILATION EXPRESSIONS
@@ -189,7 +205,7 @@ draw_clause({{'_',_},Result}) ->
     MatchVar = make_var(cat_atoms('_otherwise',kl:uuid())),
     cerl:c_clause([MatchVar], cexpr(Result));
 draw_clause({ToBeat,Result}) ->
-    MatchVar = make_var(cat_atoms('Term_',kl:uuid())),
+    MatchVar = make_var(cat_atoms('drawstep_',kl:uuid())),
     LitToBeat = cexpr(ToBeat),
     ComparisonGuard = ccall(erlang,'>',[MatchVar,LitToBeat]),
     cerl:c_clause([MatchVar],ComparisonGuard,cexpr(Result)).

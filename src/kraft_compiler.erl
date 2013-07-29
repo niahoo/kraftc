@@ -20,7 +20,7 @@ compile(Filename) ->
       , KraftWithCore <- kl_codegen:build_forms(KraftModSigns)
       % , return(kl:log("Signatures ~p",[KraftWithCore#kraftmod.signatures]))
       % , return(kl:log("Forms ~p",[KraftWithCore#kraftmod.forms]))
-      % , return(kl:log("Core Erlang ~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
+      % , return(kl:log("Core Erlang ~n~s",[core_pp:format(KraftWithCore#kraftmod.forms)]))
       % , return(kl:string_to_paper(core_pp:format(KraftWithCore#kraftmod.forms)))
       % , return(kl:term_to_paper(KraftWithCore#kraftmod.forms))
       , _Linted <- lift(core_lint:module(KraftWithCore#kraftmod.forms))
