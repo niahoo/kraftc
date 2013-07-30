@@ -38,13 +38,13 @@ must({call,{name,L,Name},_Args}) ->
 must({return,_}) ->
     ok;
 must(X) ->
-    kl:term_to_paper(X),
+    kl:logterm(X,"Must return Type"),
     ok.
 
 must_not({number,L,X}) ->
     ok;
 must_not(X) ->
-    kl:term_to_paper(X),
+    kl:term_to_paper(X, "Must not return Type"),
     ok.
 
 drawclause({ToBeat,Result}) ->
